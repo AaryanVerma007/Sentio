@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html class="dark scroll-smooth" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Sentio - Intelligence Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Inter:wght@400;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Base CSS (for Chart.js, etc.) -->
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#00696f",
+                        "surface": "#0d1515",
+                        "surface-container-low": "#151d1e",
+                        "tertiary-fixed": "#ffe173",
+                        "on-tertiary-fixed-variant": "#554500",
+                        "background": "#0d1515",
+                        "surface-tint": "#00dbe7",
+                        "surface-bright": "#333b3b",
+                        "surface-container": "#192122",
+                        "outline": "#849495",
+                        "on-tertiary": "#3b2f00",
+                        "primary-fixed": "#74f5ff",
+                        "on-surface": "#dce4e4",
+                        "tertiary-container": "#fed83a",
+                        "inverse-surface": "#dce4e4",
+                        "on-primary-fixed": "#002022",
+                        "secondary": "#ecffe3",
+                        "primary-container": "#00f2ff",
+                        "surface-container-lowest": "#080f10",
+                        "on-secondary-fixed": "#002203",
+                        "secondary-fixed": "#72ff70",
+                        "secondary-container": "#13ff43",
+                        "surface-container-highest": "#2e3637",
+                        "surface-variant": "#2e3637",
+                        "on-secondary-fixed-variant": "#00530e",
+                        "error-container": "#93000a",
+                        "outline-variant": "#3a494b",
+                        "on-background": "#dce4e4",
+                        "primary": "#e1fdff",
+                        "inverse-on-surface": "#2a3232",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#221b00",
+                        "on-surface-variant": "#b9cacb",
+                        "tertiary": "#fff6e4",
+                        "primary-fixed-dim": "#00dbe7",
+                        "surface-container-high": "#232b2c",
+                        "on-tertiary-container": "#725e00",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#00363a",
+                        "tertiary-fixed-dim": "#e8c423",
+                        "secondary-fixed-dim": "#00e639",
+                        "on-secondary": "#003907",
+                        "on-primary-container": "#006a71",
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-secondary-container": "#007117",
+                        "surface-dim": "#0d1515"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "container-max": "1440px",
+                        "margin-desktop": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Montserrat"],
+                        "body-md": ["Inter"],
+                        "label-mono": ["JetBrains Mono"],
+                        "display-lg": ["Montserrat"],
+                        "headline-lg": ["Montserrat"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-md": ["20px", { "lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "label-mono": ["16px", { "lineHeight": "1.4", "letterSpacing": "0.1em", "fontWeight": "500" }],
+                        "display-lg": ["72px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-caps": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.2em", "fontWeight": "700" }]
+                    },
+                    "animation": {
+                        "fade-in-up": "fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards"
+                    },
+                    "keyframes": {
+                        "fadeInUp": {
+                            "0%": { opacity: 0, transform: "translateY(20px)" },
+                            "100%": { opacity: 1, transform: "translateY(0)" }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: transparent; 
+            color: #dce4e4;
+        }
+        
+        .interactive-grid {
+            position: fixed; /* Keep grid fixed to screen */
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .interactive-grid::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(0, 219, 231, 0.15),
+                transparent 40%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .interactive-grid.active::before {
+            opacity: 1;
+        }
+
+        .hero-particle-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .glow-border {
+            border: 1px solid rgba(0, 219, 231, 0.2);
+            box-shadow: 0 0 15px rgba(0, 219, 231, 0.05);
+            transition: all 0.3s ease;
+        }
+        .glow-border:hover {
+            border-color: rgba(0, 219, 231, 0.5);
+            box-shadow: 0 0 20px rgba(0, 219, 231, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .data-card {
+            background: rgba(46, 54, 55, 0.4); 
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+        }
+        
+        .reveal-hidden {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: rgba(13, 21, 21, 0.5); }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 219, 231, 0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 219, 231, 0.6); }
+
+        .sample-list { max-height: 400px; overflow-y: auto; padding-right: 5px; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="font-body-md text-body-md antialiased overflow-x-hidden">
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+    <!-- Shader Background -->
+    <div class="fixed inset-0 w-full h-full -z-10 bg-surface" id="shader-container"></div>
+    <div class="interactive-grid" id="interactive-grid"></div>
+    <div class="fixed inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiMwZDE1MTUiPjwvcmVjdD48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2RjZTRlNCI+PC9jaXJjbGU+PC9zdmc+')] mix-blend-screen pointer-events-none -z-10"></div>
+
+    <!-- UI Overlays (Toast, Share, Contact) -->
+    <div id="toast-stack" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>
+
+    <!-- App Container -->
+    <div class="flex h-screen w-full relative">
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col relative h-full overflow-y-auto scroll-smooth" id="main-scroll">
+            <!-- TopAppBar -->
+            <header class="flex justify-between items-start px-margin-mobile md:px-margin-desktop py-8 w-full z-50 bg-transparent sticky top-0">
+                <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-3">
+                        <img src="logo_transparent.png" alt="Sentio Logo" class="h-24 md:h-32 object-contain scale-150 origin-left -ml-2 drop-shadow-2xl" />
+                    </div>
+                </div>
+                
+                <nav class="hidden md:flex items-center gap-10 mt-4">
+                    <a class="group relative flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors duration-300 font-bold uppercase tracking-widest text-lg px-4 py-3 overflow-hidden rounded-md" href="#hero">
+                        <span class="material-symbols-outlined text-[24px] group-hover:-translate-y-1 transition-transform duration-300">visibility</span>
+                        <span class="relative z-10">Vision</span>
+                        <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full shadow-[0_0_10px_rgba(0,219,231,0.8)] rounded-full"></span>
+                    </a>
+                    <a class="group relative flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors duration-300 font-bold uppercase tracking-widest text-lg px-4 py-3 overflow-hidden rounded-md" href="#macro-analysis">
+                        <span class="material-symbols-outlined text-[24px] group-hover:-translate-y-1 transition-transform duration-300">analytics</span>
+                        <span class="relative z-10">Macro Analysis</span>
+                        <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full shadow-[0_0_10px_rgba(0,219,231,0.8)] rounded-full"></span>
+                    </a>
+                    <a class="group relative flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors duration-300 font-bold uppercase tracking-widest text-lg px-4 py-3 overflow-hidden rounded-md" href="#data-pipeline">
+                        <span class="material-symbols-outlined text-[24px] group-hover:-translate-y-1 transition-transform duration-300">hub</span>
+                        <span class="relative z-10">Data Pipeline</span>
+                        <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full shadow-[0_0_10px_rgba(0,219,231,0.8)] rounded-full"></span>
+                    </a>
+                    <a class="group relative flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors duration-300 font-bold uppercase tracking-widest text-lg px-4 py-3 overflow-hidden rounded-md" href="#micro-inference">
+                        <span class="material-symbols-outlined text-[24px] group-hover:-translate-y-1 transition-transform duration-300">insights</span>
+                        <span class="relative z-10">Micro Analysis</span>
+                        <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full shadow-[0_0_10px_rgba(0,219,231,0.8)] rounded-full"></span>
+                    </a>
+                </nav>
+
+                <div class="flex items-center gap-4">
+                </div>
+            </header>
+
+            <!-- Initial Empty Viewport (Scroll trigger) -->
+            <section id="empty-start" class="h-[100vh] w-full flex items-center justify-center snap-start">
+            </section>
+
+            <!-- Hero Section -->
+            <section id="hero" class="relative flex-1 min-h-[600px] flex items-center px-margin-mobile md:px-margin-desktop py-24 overflow-hidden group scroll-mt-32">
+
+                <!-- Ambient Floating Slogans -->
+                <div class="hidden lg:block absolute inset-0 pointer-events-none z-0 overflow-hidden" id="ambient-slogans">
+                    <div class="ambient-slogan absolute font-label-mono text-outline uppercase tracking-widest text-base font-bold opacity-80 blur-[0.5px] transition-transform duration-500 ease-out" data-depth="1.5">
+                        Refine the Algorithm
+                    </div>
+                    <div class="ambient-slogan absolute font-label-mono text-primary uppercase tracking-[0.1em] text-base font-bold opacity-100 transition-transform duration-500 ease-out" data-depth="0.8">
+                        Discover Capabilities
+                    </div>
+                    <div class="ambient-slogan absolute font-label-mono text-on-surface-variant uppercase tracking-widest text-base font-bold opacity-90 transition-transform duration-500 ease-out" data-depth="1.2">
+                        Enter the Arena
+                    </div>
+                    <div class="ambient-slogan absolute font-label-mono text-outline uppercase tracking-widest text-base font-bold opacity-70 blur-[1px] transition-transform duration-500 ease-out" data-depth="2.0">
+                        Share Your Intel
+                    </div>
+                </div>
+                <div class="relative z-10 max-w-4xl mx-auto flex flex-col items-center text-center">
+                    <!-- Status Badge -->
+                    <div class="flex items-center gap-2 px-4 py-2 bg-surface-container/80 border border-outline-variant/30 rounded-full mb-8 reveal-item reveal-hidden">
+                        <div class="w-2 h-2 rounded-full bg-secondary-fixed animate-pulse"></div>
+                        <span class="text-xs font-label-mono text-on-surface-variant uppercase tracking-widest font-bold">v2.0 • NEURAL ENGINE ACTIVE</span>
+                    </div>
+
+                    <!-- Primary H1 -->
+                    <h1 class="font-display-lg text-[48px] md:text-display-lg font-extrabold text-white leading-none mb-4 tracking-tighter reveal-item reveal-hidden" style="transition-delay: 0.1s;">
+                        MAJOR <br/>
+                        <span class="text-surface-variant italic font-light">EMOTIONS</span> <br/>
+                        AT SCALE.
+                    </h1>
+
+                    <!-- Secondary Positioning Line -->
+                    <h2 class="text-2xl md:text-3xl font-bold text-primary mb-6 tracking-tight reveal-item reveal-hidden" style="transition-delay: 0.2s;">
+                        Sentio Analytics. Redefined.
+                    </h2>
+
+                    <!-- Supporting Paragraph -->
+                    <p class="text-on-surface-variant text-lg md:text-xl max-w-3xl mb-10 leading-relaxed font-body-md reveal-item reveal-hidden" style="transition-delay: 0.3s;">
+                        Decode the signals shaping public opinion with an intelligent telemetry engine that transforms live data into real-time, geographic, and comparative insights.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4 reveal-item reveal-hidden" style="transition-delay: 0.5s;">
+                        <a href="#macro-analysis" class="px-8 py-4 bg-white text-black font-bold uppercase tracking-wider hover:bg-primary transition-all duration-300 rounded-DEFAULT flex items-center justify-center gap-2 shadow-[0_0_0_rgba(0,219,231,0)] hover:shadow-[0_0_25px_rgba(0,219,231,0.5)] active:scale-95 group">
+                            INITIATE SEQUENCE <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+                            <span class="material-symbols-outlined text-4xl">rss_feed</span>
+                        </div>
+                        <h5 class="font-bold text-xl uppercase tracking-wider">Raw Sources</h5>
+                        <p class="text-base text-on-surface-variant font-label-mono">Voice / Text Stream</p>
+                    </div>
+                    <span class="material-symbols-outlined text-3xl text-outline-variant rotate-90 md:rotate-0 reveal-item reveal-hidden" style="transition-delay: 0.2s;">arrow_forward</span>
+                    <div class="flex flex-col items-center gap-6 bg-surface-container-high/90 p-10 rounded-lg border border-primary/30 z-10 w-72 text-center shadow-[0_0_20px_rgba(0,219,231,0.1)] relative overflow-hidden reveal-item reveal-hidden hover:-translate-y-1 transition-transform" style="transition-delay: 0.3s;">
+                        <div class="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent"></div>
+                        <div class="w-16 h-16 rounded bg-primary/20 flex items-center justify-center text-primary relative z-10">
+                            <span class="material-symbols-outlined text-4xl">hub</span>
+                        </div>
+                        <h5 class="font-bold text-xl uppercase tracking-wider text-primary relative z-10">Inference Engine</h5>
+                        <p class="text-base text-on-surface-variant font-label-mono relative z-10">NLP Processing</p>
+                    </div>
+                    <span class="material-symbols-outlined text-3xl text-outline-variant rotate-90 md:rotate-0 reveal-item reveal-hidden" style="transition-delay: 0.4s;">arrow_forward</span>
+                    <div class="flex flex-col items-center gap-6 bg-surface/80 p-10 rounded-lg border border-outline-variant/20 z-10 w-72 text-center glow-border reveal-item reveal-hidden" style="transition-delay: 0.5s;">
+                        <div class="w-16 h-16 rounded bg-surface-container flex items-center justify-center text-on-surface">
+                            <span class="material-symbols-outlined text-4xl">terminal</span>
+                        </div>
+                        <h5 class="font-bold text-xl uppercase tracking-wider">Actionable Data</h5>
+                        <p class="text-base text-on-surface-variant font-label-mono">Classification Stream</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Micro Inference -->
+            <section class="px-margin-mobile md:px-margin-desktop py-24 border-t border-outline-variant/10 relative scroll-mt-32" id="micro-inference">
+                <div class="absolute inset-0 bg-surface-container-low/50 backdrop-blur-sm -z-10"></div>
+                <div class="mb-12 reveal-item reveal-hidden">
+                    <h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg tracking-tight mb-2">Micro Inference</h3>
+                    <p class="font-label-mono text-label-mono text-primary uppercase tracking-widest">Direct Neural Classification</p>
+                </div>
+                
+                <div class="data-card p-8 rounded-lg flex flex-col md:flex-row gap-8 glow-border reveal-item reveal-hidden" style="transition-delay: 0.2s;">
+                    <!-- LEFT COLUMN: INPUT -->
+                    <div class="flex-1 flex flex-col gap-4">
+                        <h4 class="font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">keyboard</span> Input Stream</h4>
+                        <textarea id="singleInput" class="w-full h-48 bg-surface-container/50 border border-outline-variant/30 rounded-lg p-6 text-xl placeholder:text-xl text-on-surface focus:border-primary focus:outline-none bg-transparent resize-none transition-colors" placeholder="Enter text for direct neural classification..."></textarea>
+                        
+                        <div class="flex gap-4 items-center mt-2">
+                            <button id="voiceBtn" class="flex items-center justify-center bg-surface-container hover:bg-primary/20 hover:text-primary border border-outline-variant/30 rounded transition-colors shadow-[0_0_10px_rgba(0,0,0,0.5)]" title="Live Voice" style="width: 64px; height: 64px; border-radius: 50%;">
+                                <span class="material-symbols-outlined text-3xl">mic</span>
+                            </button>
+                            <button id="singleButton" class="py-4 px-8 bg-primary text-on-primary font-bold uppercase tracking-wider hover:bg-primary-fixed transition-all rounded shadow-[0_0_15px_rgba(0,219,231,0.3)] hover:shadow-[0_0_25px_rgba(0,219,231,0.5)]">Initialize Inference</button>
+                        </div>
+                    </div>
+                    
+                    <!-- RIGHT COLUMN: OUTPUT -->
+                    <div class="flex-1 flex flex-col gap-4 md:border-l md:border-outline-variant/20 md:pl-8">
+                        <h4 class="font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">analytics</span> Classification Result</h4>
+                        
+                        <div id="microIdle" class="text-sm text-on-surface-variant py-8 flex flex-col items-center justify-center flex-1">
+                            <span class="material-symbols-outlined text-4xl mb-4 opacity-50">hourglass_empty</span>
+                            Awaiting input stream...
+                        </div>
+                        
+                        <div id="microLoading" class="hidden text-sm text-primary py-8 flex flex-col items-center justify-center flex-1 animate-pulse">
+                            <div class="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+                            Computing tensors...
+                        </div>
+                        
+                        <div id="singleResult" class="hidden flex-col gap-6 flex-1">
+                            <div class="flex justify-between items-center bg-surface-container/50 p-6 rounded-lg">
+                                <span class="text-xl font-label-mono text-outline">PRIMARY SENTIMENT</span>
+                                <span id="singleSentiment" class="px-6 py-3 bg-surface-container rounded font-bold text-2xl border border-outline-variant/20 shadow-[0_0_10px_rgba(255,255,255,0.05)]">Neu</span>
+                            </div>
+                            
+                            <div class="flex flex-col gap-4 px-2">
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex justify-between text-base font-bold font-label-mono"><span class="text-secondary-fixed">POS</span><span id="txtPos" class="text-secondary-fixed">0%</span></div>
+                                    <div class="w-full h-6 bg-surface-container rounded overflow-hidden shadow-inner"><div id="barPos" class="h-full bg-secondary-fixed rounded transition-all duration-500 ease-out" style="width:0%"></div></div>
+                                </div>
+                                
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex justify-between text-base font-bold font-label-mono"><span class="text-error">NEG</span><span id="txtNeg" class="text-error">0%</span></div>
+                                    <div class="w-full h-6 bg-surface-container rounded overflow-hidden shadow-inner"><div id="barNeg" class="h-full bg-error rounded transition-all duration-500 ease-out" style="width:0%"></div></div>
+                                </div>
+                            </div>
+                            
+                            <div id="sentimentDialContainer" class="hidden mt-4 pt-4 border-t border-outline-variant/20">
+                                <div class="text-[10px] font-label-mono text-outline text-center mb-2 uppercase tracking-widest">Live Voice Activity</div>
+                                <div class="w-full h-[60px] bg-surface-container/30 rounded-t-full relative overflow-hidden border border-outline-variant/10 border-b-0">
+                                    <div id="dialNeedle" class="absolute bottom-0 left-1/2 w-1 h-[50px] bg-primary origin-bottom shadow-[0_0_5px_#00dbe7]" style="transform: translate(-50%, 0) rotate(0deg); transition: transform 0.2s;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-auto text-base font-label-mono text-outline pt-6 border-t border-outline-variant/20 flex justify-between">
+                                <span>CONF: <span id="singleConfidence" class="text-primary font-bold text-lg">0%</span></span>
+                                <span>SCORE: <span id="singleScore" class="text-primary font-bold text-lg">0</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="flex justify-between items-center px-margin-desktop py-16 w-full bg-surface-container-lowest/80 dark:bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant/10 mt-auto">
+                <img src="logo_transparent.png" alt="Sentio Logo" class="h-16 md:h-20 object-contain scale-125 origin-left drop-shadow-2xl" />
+                <div class="hidden md:flex gap-8 items-center">
+                    <a href="privacy_policy.html" target="_blank" class="group relative flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors duration-300 font-bold uppercase tracking-widest text-lg px-4 py-3 overflow-hidden rounded-md">
+                        <span class="relative z-10">Privacy Policy</span>
+                        <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full shadow-[0_0_10px_rgba(0,219,231,0.8)] rounded-full"></span>
+                    </a>
+                    <a href="terms.html" target="_blank" class="group relative flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors duration-300 font-bold uppercase tracking-widest text-lg px-4 py-3 overflow-hidden rounded-md">
+                        <span class="relative z-10">Terms of Service</span>
+                        <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full shadow-[0_0_10px_rgba(0,219,231,0.8)] rounded-full"></span>
+                    </a>
+                    <a href="cookies.html" target="_blank" class="group relative flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors duration-300 font-bold uppercase tracking-widest text-lg px-4 py-3 overflow-hidden rounded-md">
+                        <span class="relative z-10">Cookie Policy</span>
+                        <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full shadow-[0_0_10px_rgba(0,219,231,0.8)] rounded-full"></span>
+                    </a>
+                </div>
+                <div class="font-label-mono text-lg text-secondary dark:text-secondary-fixed">
+                    © 2026 SENTIO ANALYTICS
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Hidden PDF Report Template: Single Analysis -->
+    <div id="pdf-single-report" class="hidden">
+        <div class="pdf-container">
+            <!-- Report Header -->
+            <div class="pdf-header">
+                <div class="pdf-header-brand">SENTIO ANALYTICS — AI SENTIMENT INTELLIGENCE</div>
+                <h1 id="pdf-single-topic-title">Topic Analysis</h1>
+                <div class="pdf-header-subtitle" id="pdf-single-subtitle">Single Topic Sentiment Analysis Report</div>
+                <div class="pdf-header-meta">
+                    <span id="pdf-single-timestamp"></span>
+                    <span>Sample: <strong id="pdf-single-total-count">0</strong> mentions analyzed</span>
+                </div>
+            </div>
+
+            <!-- Executive Summary -->
+            <div class="pdf-section">
+                <h2>Executive Summary</h2>
+                <p id="pdf-single-ai-summary" class="pdf-summary-text"></p>
+            </div>
+
+            <!-- Sentiment Overview -->
+            <div class="pdf-section">
+                <h2>Sentiment Overview</h2>
+                <div class="pdf-row" style="align-items: flex-start;">
+                    <div class="pdf-col" style="flex: 1;">
+                        <div class="pdf-score-box">
+                            <h3>Aggregated Sentiment Score</h3>
+                            <div id="pdf-single-score" class="pdf-score-value">0.0</div>
+                            <div id="pdf-single-score-label" class="pdf-score-label neutral">Neutral</div>
+                        </div>
+                        <!-- Distribution Bar -->
+                        <div id="pdf-single-dist-bar" class="pdf-dist-bar">
+                            <div class="pos-fill" style="width: 33%;"></div>
+                            <div class="neu-fill" style="width: 34%;"></div>
+                            <div class="neg-fill" style="width: 33%;"></div>
+                        </div>
+                        <div class="pdf-dist-labels">
+                            <span class="pos-label">Positive: <span id="pdf-single-pos-pct-val">0%</span></span>
+                            <span class="neu-label">Neutral: <span id="pdf-single-neu-pct-val">0%</span></span>
+                            <span class="neg-label">Negative: <span id="pdf-single-neg-pct-val">0%</span></span>
+                        </div>
+                    </div>
+                    <div class="pdf-col report-chart-block" style="flex: 1; text-align: center;">
+                        <div class="pdf-chart-container">
+                            <img id="pdf-single-doughnut-img" src="" alt="Sentiment Distribution" class="pdf-chart-img" style="max-width: 260px; margin: 0 auto;">
+                            <div class="pdf-chart-center">
+                                <div class="pdf-chart-label">SAMPLE</div>
+                                <div id="pdf-single-chart-total" class="pdf-chart-number">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7-Day Trend Trajectory -->
+            <div class="pdf-section report-chart-block">
+                <h2>7-Day Trend Trajectory</h2>
+                <p class="pdf-body-text">Temporal analysis of sentiment volume over the most recent seven-day observation window, segmented by polarity classification.</p>
+                <img id="pdf-single-trend-img" src="" alt="7-Day Trend" class="pdf-chart-img">
+            </div>
+
+            <!-- Sentiment Evidence -->
+            <div class="pdf-section">
+                <h2>Representative Sentiment Evidence</h2>
+                <p class="pdf-body-text">Curated, deduplicated statements selected for relevance, sentiment strength, and source diversity. These represent the dominant themes within the analyzed discourse.</p>
+                
+                <div class="pdf-perspectives-container">
+                    <div class="pdf-perspective-group">
+                        <h3 class="pos-text">Positive Evidence (<span id="pdf-single-pos-pct"></span>)</h3>
+                        <div id="pdf-single-pos-samples" class="pdf-samples-list"></div>
+                    </div>
+                    
+                    <div class="pdf-perspective-group">
+                        <h3 class="neg-text">Negative Evidence (<span id="pdf-single-neg-pct"></span>)</h3>
+                        <div id="pdf-single-neg-samples" class="pdf-samples-list"></div>
+                    </div>
+                    
+                    <div class="pdf-perspective-group">
+                        <h3 class="neu-text">Neutral Evidence (<span id="pdf-single-neu-pct"></span>)</h3>
+                        <div id="pdf-single-neu-samples" class="pdf-samples-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Methodology -->
+            <div class="pdf-section">
+                <h2>Methodology &amp; Data Quality</h2>
+                <div class="pdf-methodology">This report is generated through multi-platform semantic extraction (Twitter/X, Reddit, Google News, Bing). Sentiment classification is powered by a fine-tuned DistilBERT NLP model, scoring text on a continuous −10 to +10 scale. Near-duplicate statements are algorithmically filtered to ensure diverse evidence representation. Authenticity scoring is applied to identify potential spam or bot-generated content. All percentages and metrics are derived deterministically from the analyzed dataset.</div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="pdf-footer">
+                <p>Sentio Analytics — AI Sentiment Intelligence Report | Generated <span class="pdf-current-date"></span> | Confidential</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden PDF Report Template: Battle Mode -->
+    <div id="pdf-battle-report" class="hidden">
+        <div class="pdf-container">
+            <!-- Report Header -->
+            <div class="pdf-header">
+                <div class="pdf-header-brand">SENTIO ANALYTICS — AI SENTIMENT INTELLIGENCE</div>
+                <h1 id="pdf-battle-title">Comparative Sentiment Analysis</h1>
+                <div class="pdf-header-subtitle" id="pdf-battle-subtitle">Topic A vs Topic B</div>
+                <div class="pdf-header-meta">
+                    <span id="pdf-battle-timestamp"></span>
+                    <span>Comparative Battle Mode Report</span>
+                </div>
+            </div>
+
+            <!-- Verdict -->
+            <div class="pdf-section">
+                <h2>Verdict</h2>
+                <div class="pdf-verdict-box">
+                    <div id="pdf-battle-verdict-title" class="pdf-verdict-title">Topic Wins</div>
+                    <div id="pdf-battle-verdict-subtext" class="pdf-verdict-subtext">Difference in sentiment.</div>
+                </div>
+            </div>
+
+            <!-- Comparative Metrics -->
+            <div class="pdf-section">
+                <h2>Comparative Sentiment Metrics</h2>
+                <div class="pdf-row" style="align-items: flex-start;">
+                    <!-- Topic A -->
+                    <div class="pdf-col" style="flex: 1; padding-right: 15px; border-right: 1px solid #e5e7eb;">
+                        <h3 id="pdf-battle-topic-a" class="pdf-topic-heading">Topic A</h3>
+                        <div class="pdf-score-box">
+                            <h3>Sentiment Score</h3>
+                            <div id="pdf-battle-score-a" class="pdf-score-value">0.0</div>
+                        </div>
+                        <div class="report-chart-block" style="text-align: center;">
+                            <div class="pdf-chart-container">
+                                <img id="pdf-battle-doughnut-a" src="" alt="Distribution A" class="pdf-chart-img" style="max-width: 200px; margin: 0 auto;">
+                                <div class="pdf-chart-center">
+                                    <div class="pdf-chart-label">SAMPLE</div>
+                                    <div id="pdf-battle-chart-total-a" class="pdf-chart-number">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pdf-stats-row">
+                            <span class="pos-text">POS: <span id="pdf-battle-pos-a">0%</span></span>
+                            <span class="neg-text">NEG: <span id="pdf-battle-neg-a">0%</span></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Topic B -->
+                    <div class="pdf-col" style="flex: 1; padding-left: 15px;">
+                        <h3 id="pdf-battle-topic-b" class="pdf-topic-heading">Topic B</h3>
+                        <div class="pdf-score-box">
+                            <h3>Sentiment Score</h3>
+                            <div id="pdf-battle-score-b" class="pdf-score-value">0.0</div>
+                        </div>
+                        <div class="report-chart-block" style="text-align: center;">
+                            <div class="pdf-chart-container">
+                                <img id="pdf-battle-doughnut-b" src="" alt="Distribution B" class="pdf-chart-img" style="max-width: 200px; margin: 0 auto;">
+                                <div class="pdf-chart-center">
+                                    <div class="pdf-chart-label">SAMPLE</div>
+                                    <div id="pdf-battle-chart-total-b" class="pdf-chart-number">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pdf-stats-row">
+                            <span class="pos-text">POS: <span id="pdf-battle-pos-b">0%</span></span>
+                            <span class="neg-text">NEG: <span id="pdf-battle-neg-b">0%</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparative Evidence -->
+            <div class="pdf-section">
+                <h2>Comparative Evidence Analysis</h2>
+                <p class="pdf-body-text">Representative statements from each topic, curated for sentiment strength, relevance, and source diversity.</p>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h3 id="pdf-battle-feed-title-a" class="pdf-topic-heading" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px;">Topic A Evidence</h3>
+                    <div id="pdf-battle-samples-a" class="pdf-samples-list"></div>
+                </div>
+                
+                <div>
+                    <h3 id="pdf-battle-feed-title-b" class="pdf-topic-heading" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px;">Topic B Evidence</h3>
+                    <div id="pdf-battle-samples-b" class="pdf-samples-list"></div>
+                </div>
+            </div>
+
+            <!-- Methodology -->
+            <div class="pdf-section">
+                <h2>Methodology &amp; Data Quality</h2>
+                <div class="pdf-methodology">This comparative report is generated through multi-platform semantic extraction. Sentiment classification is powered by a fine-tuned DistilBERT NLP model. The verdict is deterministically derived from verified dataset sizes and sentiment distributions — it is not generated by a language model. Comparative metrics use positive sentiment percentage as the primary factor, with negative sentiment, sample size, and authenticity as supporting factors.</div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="pdf-footer">
+                <p>Sentio Analytics — AI Comparative Intelligence Report | Generated <span class="pdf-current-date"></span> | Confidential</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- html2pdf.js for Client-Side PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

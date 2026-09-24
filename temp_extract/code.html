@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+
+<html class="dark scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sentiment - Measure Emotion at Scale</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&amp;family=Inter:wght@400;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#00696f",
+                        "surface": "#0d1515",
+                        "surface-container-low": "#151d1e",
+                        "tertiary-fixed": "#ffe173",
+                        "on-tertiary-fixed-variant": "#554500",
+                        "background": "#0d1515",
+                        "surface-tint": "#00dbe7",
+                        "surface-bright": "#333b3b",
+                        "surface-container": "#192122",
+                        "outline": "#849495",
+                        "on-tertiary": "#3b2f00",
+                        "primary-fixed": "#74f5ff",
+                        "on-surface": "#dce4e4",
+                        "tertiary-container": "#fed83a",
+                        "inverse-surface": "#dce4e4",
+                        "on-primary-fixed": "#002022",
+                        "secondary": "#ecffe3",
+                        "primary-container": "#00f2ff",
+                        "surface-container-lowest": "#080f10",
+                        "on-secondary-fixed": "#002203",
+                        "secondary-fixed": "#72ff70",
+                        "secondary-container": "#13ff43",
+                        "surface-container-highest": "#2e3637",
+                        "surface-variant": "#2e3637",
+                        "on-secondary-fixed-variant": "#00530e",
+                        "error-container": "#93000a",
+                        "outline-variant": "#3a494b",
+                        "on-background": "#dce4e4",
+                        "primary": "#e1fdff",
+                        "inverse-on-surface": "#2a3232",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#221b00",
+                        "on-surface-variant": "#b9cacb",
+                        "tertiary": "#fff6e4",
+                        "primary-fixed-dim": "#00dbe7",
+                        "surface-container-high": "#232b2c",
+                        "on-tertiary-container": "#725e00",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#00363a",
+                        "tertiary-fixed-dim": "#e8c423",
+                        "secondary-fixed-dim": "#00e639",
+                        "on-secondary": "#003907",
+                        "on-primary-container": "#006a71",
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-secondary-container": "#007117",
+                        "surface-dim": "#0d1515"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "container-max": "1440px",
+                        "margin-desktop": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Montserrat"],
+                        "body-md": ["Inter"],
+                        "label-mono": ["JetBrains Mono"],
+                        "display-lg": ["Montserrat"],
+                        "headline-lg": ["Montserrat"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "label-mono": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.1em", "fontWeight": "500" }],
+                        "display-lg": ["72px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-caps": ["11px", { "lineHeight": "1.2", "letterSpacing": "0.2em", "fontWeight": "700" }]
+                    },
+                    "animation": {
+                        "fade-in-up": "fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards"
+                    },
+                    "keyframes": {
+                        "fadeInUp": {
+                            "0%": { opacity: 0, transform: "translateY(20px)" },
+                            "100%": { opacity: 1, transform: "translateY(0)" }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: transparent; /* Changed for shader background */
+            color: #dce4e4;
+        }
+        
+        /* Interactive Grid */
+        .interactive-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+        }
+        
+        .interactive-grid::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(0, 219, 231, 0.15),
+                transparent 40%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .interactive-grid:hover::before {
+            opacity: 1;
+        }
+
+        .hero-particle-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+        
+        .glow-border {
+            border: 1px solid rgba(0, 219, 231, 0.2);
+            box-shadow: 0 0 15px rgba(0, 219, 231, 0.05);
+            transition: all 0.3s ease;
+        }
+        .glow-border:hover {
+            border-color: rgba(0, 219, 231, 0.5);
+            box-shadow: 0 0 20px rgba(0, 219, 231, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .data-card {
+            background: rgba(46, 54, 55, 0.4); /* Slightly more opaque for readability over shader */
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+        }
+        
+        /* Reveal animation classes */
+        .reveal-hidden {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Thin scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(13, 21, 21, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 219, 231, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 219, 231, 0.6);
+        }
+    </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="font-body-md text-body-md antialiased overflow-x-hidden">
+<!-- Shader Background -->
+<div class="fixed inset-0 w-full h-full -z-10 bg-surface" id="shader-container"></div>
+<!-- App Container -->
+<div class="flex h-screen w-full relative">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col p-gutter gap-4 h-full w-64 border-r border-outline-variant/20 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-white/10 z-20 shrink-0">
+<div class="mb-8">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"></div>
+<div>
+<h1 class="font-display-lg text-headline-lg tracking-tighter text-on-surface dark:text-primary">SENTIMENT.</h1>
+<p class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-widest mt-1">AI Logic Engine</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 p-3 bg-primary text-on-primary rounded-lg font-bold shadow-[0_0_15px_rgba(0,219,231,0.3)] scale-98 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">visibility</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest">Vision</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:text-primary transition-colors duration-300 hover:bg-surface-variant/50 scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest">Macro Analysis</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:text-primary transition-colors duration-300 hover:bg-surface-variant/50 scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest">Smart Summary</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:text-primary transition-colors duration-300 hover:bg-surface-variant/50 scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest">Micro Inference</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-4 border-t border-outline-variant/20 pt-4">
+<button class="w-full py-3 bg-white text-black font-bold uppercase tracking-wider hover:bg-primary transition-all duration-300 rounded-DEFAULT text-sm shadow-[0_0_0_rgba(0,219,231,0)] hover:shadow-[0_0_20px_rgba(0,219,231,0.4)] active:scale-95">INITIATE SEQUENCE</button>
+<div class="flex flex-col gap-2 text-xs text-on-surface-variant font-label-mono">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">sensors</span>
+<span>System Status: <span class="text-secondary-fixed">ONLINE</span></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">memory</span>
+<span>Model: DistilBERT v1</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">speed</span>
+<span>Latency: 17ms</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col relative h-full overflow-y-auto">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 w-full z-50 bg-surface/60 dark:bg-surface/60 backdrop-blur-md border-b border-outline-variant/10 sticky top-0 transition-all duration-300 ease-in-out">
+<div class="flex items-center gap-8">
+<div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface dark:text-on-surface tracking-tighter md:hidden">SENTIMENT.</div>
+<nav class="hidden md:flex gap-6">
+<a class="text-primary border-b border-primary pb-1 font-label-caps text-label-caps uppercase" href="#">Vision</a>
+<a class="text-on-surface-variant hover:text-on-surface font-label-caps text-label-caps uppercase hover:opacity-80 transition-opacity" href="#features">Analysis</a>
+<a class="text-on-surface-variant hover:text-on-surface font-label-caps text-label-caps uppercase hover:opacity-80 transition-opacity" href="#how-it-works">Sources</a>
+<a class="text-on-surface-variant hover:text-on-surface font-label-caps text-label-caps uppercase hover:opacity-80 transition-opacity" href="#pricing">Pricing</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-DEFAULT border border-outline-variant/30 text-on-surface-variant text-sm font-label-mono hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-[16px]">search</span>
+<span>Command Palette</span>
+<kbd class="ml-2 text-xs bg-surface-container-high px-1 py-0.5 rounded">Ctrl+K</kbd>
+</button>
+<div class="flex items-center gap-3">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">share</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">mail</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">keyboard</span></button>
+</div>
+</div>
+</header>
+<!-- Hero Section -->
+<section class="relative flex-1 min-h-[600px] flex items-center px-margin-mobile md:px-margin-desktop py-24 overflow-hidden group">
+<div class="interactive-grid" id="interactive-grid"></div>
+<div class="hero-particle-bg" id="particle-container">
+<!-- A simple visual representation of particles -->
+<div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiMwZDE1MTUiPjwvcmVjdD48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2RjZTRlNCI+PC9jaXJjbGU+PC9zdmc+')] mix-blend-screen transition-transform duration-1000 ease-out"></div>
+</div>
+<div class="relative z-10 max-w-4xl">
+<h2 class="font-display-lg text-[48px] md:text-display-lg font-extrabold text-white leading-none mb-6 tracking-tighter opacity-0 animate-fade-in-up" style="animation-delay: 0s;">
+                        MEASURE <br/>
+<span class="text-surface-variant italic font-light">EMOTION</span> <br/>
+                        AT SCALE.
+                    </h2>
+<p class="text-on-surface-variant text-lg md:text-xl max-w-2xl mb-10 leading-relaxed font-body-md border-l-2 border-primary/30 pl-4 opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">
+                        The intelligence engine processing digital interactions into pure sentiment data, utilizing an 85% accuracy deep learning model.
+                    </p>
+<div class="flex flex-wrap gap-4 opacity-0 animate-fade-in-up" style="animation-delay: 0.4s;">
+<button class="px-8 py-4 bg-white text-black font-bold uppercase tracking-wider hover:bg-primary transition-all duration-300 rounded-DEFAULT flex items-center gap-2 shadow-[0_0_0_rgba(0,219,231,0)] hover:shadow-[0_0_25px_rgba(0,219,231,0.5)] active:scale-95 group">
+                            INITIATE SEQUENCE <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="absolute right-[10%] top-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 rounded-full border border-outline-variant/10 flex items-center justify-center opacity-30 pointer-events-none hidden lg:flex">
+<div class="w-full h-full border border-dashed border-primary/20 rounded-full animate-[spin_60s_linear_infinite]"></div>
+<div class="absolute w-3/4 h-3/4 border border-dashed border-secondary/20 rounded-full animate-[spin_40s_linear_infinite_reverse]"></div>
+</div>
+</section>
+<!-- Features Bento Grid -->
+<section class="px-margin-mobile md:px-margin-desktop py-24 border-t border-outline-variant/10 relative" id="features">
+<div class="absolute inset-0 bg-surface-container-low/50 backdrop-blur-sm -z-10"></div>
+<div class="mb-12 reveal-item reveal-hidden">
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg tracking-tight mb-2">Capabilities</h3>
+<p class="font-label-mono text-label-mono text-primary uppercase tracking-widest">System Architecture</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="data-card p-8 rounded-lg flex flex-col gap-4 glow-border h-full reveal-item reveal-hidden" style="transition-delay: 0.1s;">
+<span class="material-symbols-outlined text-primary text-3xl mb-2">bolt</span>
+<h4 class="font-bold text-xl">Real-time Ingestion</h4>
+<p class="text-on-surface-variant text-sm flex-1">Stream millions of data points per second with sub-millisecond latency. Built for high-frequency trading and live event monitoring.</p>
+<div class="w-full h-1 bg-surface-container mt-4">
+<div class="h-full bg-primary w-3/4"></div>
+</div>
+</div>
+<div class="data-card p-8 rounded-lg flex flex-col gap-4 glow-border h-full md:col-span-2 reveal-item reveal-hidden" style="transition-delay: 0.2s;">
+<span class="material-symbols-outlined text-primary text-3xl mb-2">neurology</span>
+<h4 class="font-bold text-xl">Deep Learning Inference</h4>
+<p class="text-on-surface-variant text-sm">Utilizing DistilBERT v1 with custom fine-tuning for nuance detection, sarcasm identification, and multi-layered emotional mapping across 14 distinct affective states.</p>
+<div class="mt-4 flex gap-4 font-label-mono text-[10px] text-outline">
+<div class="flex flex-col gap-1"><span class="text-on-surface">ACCURACY</span><span>94.2%</span></div>
+<div class="flex flex-col gap-1"><span class="text-on-surface">PARAMETERS</span><span>66M</span></div>
+<div class="flex flex-col gap-1"><span class="text-on-surface">INFERENCE</span><span>4ms</span></div>
+</div>
+</div>
+<div class="data-card p-8 rounded-lg flex flex-col gap-4 glow-border h-full md:col-span-3 reveal-item reveal-hidden" style="transition-delay: 0.3s;">
+<span class="material-symbols-outlined text-primary text-3xl mb-2">public</span>
+<h4 class="font-bold text-xl">Global Reach</h4>
+<p class="text-on-surface-variant text-sm max-w-2xl">Native processing for 42 languages with cultural-context awareness.</p>
+<!-- Abstract map visual -->
+<div class="w-full h-32 mt-4 relative bg-surface/50 border border-outline-variant/20 rounded overflow-hidden">
+<div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(#3a494b 1px, transparent 1px); background-size: 8px 8px;"></div>
+<div class="absolute top-1/4 left-1/4 w-2 h-2 bg-primary rounded-full shadow-[0_0_10px_#00dbe7] animate-pulse"></div>
+<div class="absolute top-1/2 left-1/2 w-2 h-2 bg-secondary rounded-full shadow-[0_0_10px_#72ff70] animate-pulse" style="animation-delay: 0.5s"></div>
+<div class="absolute top-1/3 right-1/4 w-2 h-2 bg-primary rounded-full shadow-[0_0_10px_#00dbe7] animate-pulse" style="animation-delay: 1s"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- How it Works Flow -->
+<section class="px-margin-mobile md:px-margin-desktop py-24 border-t border-outline-variant/10 relative" id="how-it-works">
+<div class="absolute inset-0 bg-surface/30 backdrop-blur-sm -z-10"></div>
+<div class="mb-16 text-center reveal-item reveal-hidden">
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg tracking-tight mb-2">Data Pipeline</h3>
+<p class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-widest">Ingest to Inference</p>
+</div>
+<div class="flex flex-col md:flex-row items-center justify-between gap-8 max-w-5xl mx-auto relative">
+<!-- Connecting line -->
+<div class="hidden md:block absolute top-1/2 left-0 w-full h-[1px] bg-outline-variant/30 -z-10"></div>
+<div class="flex flex-col items-center gap-4 bg-surface/80 p-6 rounded-lg border border-outline-variant/20 z-10 w-48 text-center glow-border reveal-item reveal-hidden" style="transition-delay: 0.1s;">
+<div class="w-12 h-12 rounded bg-surface-container flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined">rss_feed</span>
+</div>
+<h5 class="font-bold text-sm uppercase tracking-wider">Raw Sources</h5>
+<p class="text-xs text-on-surface-variant font-label-mono">Twitter, Web, Internal API</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant rotate-90 md:rotate-0 reveal-item reveal-hidden" style="transition-delay: 0.2s;">arrow_forward</span>
+<div class="flex flex-col items-center gap-4 bg-surface-container-high/90 p-6 rounded-lg border border-primary/30 z-10 w-48 text-center shadow-[0_0_20px_rgba(0,219,231,0.1)] relative overflow-hidden reveal-item reveal-hidden hover:-translate-y-1 transition-transform" style="transition-delay: 0.3s;">
+<div class="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent"></div>
+<div class="w-12 h-12 rounded bg-primary/20 flex items-center justify-center text-primary relative z-10">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<h5 class="font-bold text-sm uppercase tracking-wider text-primary relative z-10">Sentiment Engine</h5>
+<p class="text-xs text-on-surface-variant font-label-mono relative z-10">NLP Processing &amp; Inference</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant rotate-90 md:rotate-0 reveal-item reveal-hidden" style="transition-delay: 0.4s;">arrow_forward</span>
+<div class="flex flex-col items-center gap-4 bg-surface/80 p-6 rounded-lg border border-outline-variant/20 z-10 w-48 text-center glow-border reveal-item reveal-hidden" style="transition-delay: 0.5s;">
+<div class="w-12 h-12 rounded bg-surface-container flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined">terminal</span>
+</div>
+<h5 class="font-bold text-sm uppercase tracking-wider">Actionable Data</h5>
+<p class="text-xs text-on-surface-variant font-label-mono">JSON Streams, Webhooks</p>
+</div>
+</div>
+</section>
+<!-- Pricing Section -->
+<section class="px-margin-mobile md:px-margin-desktop py-24 border-t border-outline-variant/10 relative" id="pricing">
+<div class="absolute inset-0 bg-surface-container-low/60 backdrop-blur-md -z-10"></div>
+<div class="mb-16 text-center reveal-item reveal-hidden">
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg tracking-tight mb-2">Access Tiers</h3>
+<p class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-widest">Select Computing Resource</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+<!-- Lite -->
+<div class="data-card p-8 rounded-lg flex flex-col gap-6 border-outline-variant/20 hover:border-primary/30 transition-all duration-300 reveal-item reveal-hidden" style="transition-delay: 0.1s;">
+<div>
+<h4 class="font-label-mono text-label-mono uppercase tracking-widest text-on-surface-variant mb-2">Lite</h4>
+<div class="text-3xl font-bold">$99<span class="text-sm font-normal text-on-surface-variant">/mo</span></div>
+</div>
+<ul class="flex flex-col gap-3 text-sm text-on-surface-variant flex-1">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-outline">check</span> 100k requests / mo</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-outline">check</span> Standard Latency</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-outline">check</span> Basic Emotion Mapping</li>
+</ul>
+<button class="w-full py-3 border border-outline-variant/30 text-on-surface font-bold uppercase tracking-wider hover:bg-surface-container hover:border-primary/30 transition-all active:scale-95 rounded-DEFAULT text-sm">Deploy Lite</button>
+</div>
+<!-- Pro (Highlighted) -->
+<div class="data-card p-8 rounded-lg flex flex-col gap-6 border-primary/50 relative shadow-[0_0_30px_rgba(0,219,231,0.1)] -translate-y-2 hover:-translate-y-4 hover:shadow-[0_0_40px_rgba(0,219,231,0.2)] transition-all duration-300 reveal-item reveal-hidden" style="transition-delay: 0.2s;">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-on-primary px-3 py-1 rounded font-label-mono text-[10px] uppercase font-bold tracking-widest shadow-[0_0_10px_rgba(0,219,231,0.3)]">Recommended</div>
+<div>
+<h4 class="font-label-mono text-label-mono uppercase tracking-widest text-primary mb-2">Pro</h4>
+<div class="text-3xl font-bold">$499<span class="text-sm font-normal text-on-surface-variant">/mo</span></div>
+</div>
+<ul class="flex flex-col gap-3 text-sm text-on-surface-variant flex-1">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-primary">check</span> 1M requests / mo</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-primary">check</span> Dedicated Endpoints</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-primary">check</span> Advanced Sarcasm Detection</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-primary">check</span> Priority Support</li>
+</ul>
+<button class="w-full py-3 bg-primary text-on-primary font-bold uppercase tracking-wider hover:bg-primary-fixed hover:shadow-[0_0_15px_rgba(0,219,231,0.4)] transition-all active:scale-95 rounded-DEFAULT text-sm">Deploy Pro</button>
+</div>
+<!-- Enterprise -->
+<div class="data-card p-8 rounded-lg flex flex-col gap-6 border-outline-variant/20 hover:border-primary/30 transition-all duration-300 reveal-item reveal-hidden" style="transition-delay: 0.3s;">
+<div>
+<h4 class="font-label-mono text-label-mono uppercase tracking-widest text-on-surface-variant mb-2">Enterprise</h4>
+<div class="text-3xl font-bold">Custom</div>
+</div>
+<ul class="flex flex-col gap-3 text-sm text-on-surface-variant flex-1">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-outline">check</span> Unlimited requests</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-outline">check</span> On-Premise Deployment</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-outline">check</span> Custom Model Fine-Tuning</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-outline">check</span> SLA Guarantee</li>
+</ul>
+<button class="w-full py-3 border border-outline-variant/30 text-on-surface font-bold uppercase tracking-wider hover:bg-surface-container hover:border-primary/30 transition-all active:scale-95 rounded-DEFAULT text-sm">Contact Sales</button>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="flex justify-between items-center px-margin-desktop py-6 w-full bg-surface-container-lowest/80 dark:bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant/10 mt-auto">
+<div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tighter">SENTIMENT.</div>
+<div class="hidden md:flex gap-6">
+<a class="text-outline-variant hover:text-primary transition-colors font-label-mono text-label-mono" href="#">Privacy Policy</a>
+<a class="text-outline-variant hover:text-primary transition-colors font-label-mono text-label-mono" href="#">Terms of Service</a>
+<a class="text-outline-variant hover:text-primary transition-colors font-label-mono text-label-mono" href="#">API Status</a>
+</div>
+<div class="font-label-mono text-label-mono text-secondary dark:text-secondary-fixed">
+                    © 2024 SENTIMENT ANALYTICS
+                </div>
+</footer>
+</main>
+</div>
+<script>
+        // Shader Background Implementation
+        const initShader = () => {
+            const container = document.getElementById('shader-container');
+            if (!container) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+            const renderer = new THREE.WebGLRenderer({ alpha: false });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            const vertexShader = `
+                varying vec2 v_texCoord;
+                void main() {
+                    v_texCoord = uv;
+                    gl_Position = vec4(position, 1.0);
+                }
+            `;
+
+            const fragmentShader = `
+                precision highp float;
+                varying vec2 v_texCoord;
+                uniform float u_time;
+                uniform vec2 u_resolution;
+                uniform vec2 u_mouse;
+
+                float noise(vec2 p) {
+                    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+                }
+
+                float smoothNoise(vec2 p) {
+                    vec2 i = floor(p);
+                    vec2 f = fract(p);
+                    f = f * f * (3.0 - 2.0 * f);
+                    float a = noise(i);
+                    float b = noise(i + vec2(1.0, 0.0));
+                    float c = noise(i + vec2(0.0, 1.0));
+                    float d = noise(i + vec2(1.0, 1.0));
+                    return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+                }
+
+                float fbm(vec2 p) {
+                    float v = 0.0;
+                    float a = 0.5;
+                    for (int i = 0; i < 5; i++) {
+                        v += a * smoothNoise(p);
+                        p *= 2.0;
+                        a *= 0.5;
+                    }
+                    return v;
+                }
+
+                void main() {
+                    vec2 uv = v_texCoord;
+                    vec2 mouse = u_mouse / u_resolution;
+                    
+                    // Create a sense of depth and movement
+                    float n = fbm(uv * 3.0 + u_time * 0.05);
+                    n += fbm(uv * 6.0 - u_time * 0.1) * 0.5;
+                    
+                    // Add mouse interaction
+                    float dist = distance(uv, mouse);
+                    float mouseEffect = smoothstep(0.4, 0.0, dist) * 0.2;
+                    
+                    // Primary color from Sentiment Noir (#00f2ff converted to vec3)
+                    vec3 color1 = vec3(0.0, 0.95, 1.0); 
+                    vec3 color2 = vec3(0.02, 0.04, 0.05); // Deep background
+                    
+                    vec3 finalColor = mix(color2, color1, n * 0.15 + mouseEffect);
+                    
+                    // Add "digital grain" or data points
+                    float grain = noise(uv * 500.0 + u_time);
+                    if (grain > 0.98) finalColor += color1 * 0.3;
+
+                    gl_FragColor = vec4(finalColor, 1.0);
+                }
+            `;
+
+            const uniforms = {
+                u_time: { value: 0 },
+                u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                u_mouse: { value: new THREE.Vector2(0, 0) }
+            };
+
+            const material = new THREE.ShaderMaterial({
+                vertexShader,
+                fragmentShader,
+                uniforms,
+                depthWrite: false,
+                depthTest: false
+            });
+
+            const geometry = new THREE.PlaneGeometry(2, 2);
+            const mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetMouseX = 0;
+            let targetMouseY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                targetMouseX = e.clientX;
+                targetMouseY = window.innerHeight - e.clientY; // Invert Y for shader
+            });
+
+            const animate = (time) => {
+                requestAnimationFrame(animate);
+                
+                // Smooth mouse interpolation
+                mouseX += (targetMouseX - mouseX) * 0.05;
+                mouseY += (targetMouseY - mouseY) * 0.05;
+
+                uniforms.u_time.value = time * 0.001;
+                uniforms.u_mouse.value.set(mouseX, mouseY);
+                
+                renderer.render(scene, camera);
+            };
+
+            animate(0);
+
+            window.addEventListener('resize', () => {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
+            });
+        };
+
+        // Interactive Grid Effect
+        const initGrid = () => {
+            const grid = document.getElementById('interactive-grid');
+            if(!grid) return;
+            
+            document.addEventListener('mousemove', e => {
+                const rect = grid.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                grid.style.setProperty('--mouse-x', `${x}px`);
+                grid.style.setProperty('--mouse-y', `${y}px`);
+            });
+        };
+
+        // Scroll Reveal Observer
+        const initReveal = () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.remove('reveal-hidden');
+                        entry.target.classList.add('reveal-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-item').forEach(item => {
+                observer.observe(item);
+            });
+        };
+
+        // Simple subtle parallax for hero particles
+        const initParallax = () => {
+            const hero = document.querySelector('.hero-particle-bg > div');
+            document.addEventListener('mousemove', (e) => {
+                if(!hero) return;
+                const x = (e.clientX / window.innerWidth - 0.5) * 30;
+                const y = (e.clientY / window.innerHeight - 0.5) * 30;
+                hero.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        };
+
+        // Initialize all effects
+        window.addEventListener('DOMContentLoaded', () => {
+            initShader();
+            initGrid();
+            initReveal();
+            initParallax();
+        });
+    </script>
+</body></html>

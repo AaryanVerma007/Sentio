@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html class="dark scroll-smooth" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Terms of Service | Sentio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Inter:wght@400;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#e1fdff",
+                        "surface": "#0d1515",
+                        "surface-container": "#192122",
+                        "surface-container-low": "#151d1e",
+                        "surface-container-lowest": "#080f10",
+                        "on-surface": "#dce4e4",
+                        "on-surface-variant": "#b9cacb",
+                        "outline": "#849495",
+                        "outline-variant": "#3a494b",
+                        "secondary-fixed": "#72ff70",
+                        "error": "#ffb4ab"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Montserrat"],
+                        "headline-lg": ["Montserrat"],
+                        "body-md": ["Inter"],
+                        "label-mono": ["JetBrains Mono"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            font-size: 87.5%; /* Reduces 1rem from 16px to 14px */
+        }
+        body {
+            background-color: #0d1515; 
+            color: #dce4e4;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Glassmorphism Background Elements */
+        .interactive-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 50vw;
+            height: 50vh;
+            background: radial-gradient(circle, rgba(0, 219, 231, 0.08) 0%, transparent 60%);
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(60px);
+        }
+
+        .ambient-glow-2 {
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 60vw;
+            height: 60vh;
+            background: radial-gradient(circle, rgba(114, 255, 112, 0.05) 0%, transparent 60%);
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(60px);
+        }
+
+        .data-card {
+            background: rgba(25, 33, 34, 0.6); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(132, 148, 149, 0.15);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .data-card:hover {
+            border-color: rgba(0, 219, 231, 0.3);
+            box-shadow: 0 0 20px rgba(0, 219, 231, 0.1);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(0, 219, 231, 0.4);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(13, 21, 21, 0.5); }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 219, 231, 0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 219, 231, 0.6); }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #e1fdff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(132, 148, 149, 0.2);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 .material-symbols-outlined {
+            color: #00dbe7;
+            font-size: 1.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+            color: #b9cacb;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #b9cacb;
+        }
+
+        li::before {
+            content: "•";
+            color: #00dbe7;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        strong {
+            color: #e1fdff;
+        }
+
+        .highlight-box {
+            background: rgba(0, 219, 231, 0.05);
+            border-left: 4px solid #00dbe7;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-primary/30 selection:text-primary">
+
+    <!-- Background Elements -->
+    <div class="interactive-grid"></div>
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow-2"></div>
+
+    <div class="max-w-4xl mx-auto px-6 py-16 md:py-24">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center justify-center p-4 rounded-full bg-surface-container border border-outline-variant/30 mb-6 shadow-[0_0_30px_rgba(0,219,231,0.15)]">
+                <span class="material-symbols-outlined text-5xl text-primary drop-shadow-[0_0_10px_rgba(0,219,231,0.5)]">gavel</span>
+            </div>
+            <h1 class="font-display-lg text-4xl md:text-6xl font-extrabold text-primary mb-4 tracking-tight glow-text uppercase">
+                Terms of Service
+            </h1>
+            <div class="font-label-mono text-outline uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-secondary-fixed animate-pulse"></span>
+                Last Updated: August 13, 2026
+            </div>
+        </div>
+
+        <!-- Main Content Glass Card -->
+        <div class="data-card rounded-2xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+            <!-- Decorative corner accent -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full pointer-events-none"></div>
+
+            <!-- 1. Acceptance of Terms -->
+            <section id="acceptance">
+                <h2><span class="material-symbols-outlined">handshake</span> 1. Acceptance of Terms</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">By using Sentio, you agree to follow these rules. If you don't agree with them, please do not use our service.</p>
+                </div>
+                <p>Welcome to <strong>Sentio</strong>, a real-time contextual sentiment and market intelligence dashboard (the "Service"). By accessing or using our Service, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to all the terms and conditions of this agreement, you may not access or use the Service.</p>
+            </section>
+
+            <!-- 2. Description of Service & AI Disclaimer -->
+            <section id="service-description">
+                <h2><span class="material-symbols-outlined">psychology</span> 2. Description of Service & AI Disclaimer</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">We provide tools to analyze public sentiment using AI. However, AI makes mistakes. Never use our data as the only reason for making big financial or business decisions.</p>
+                </div>
+                <p>Sentio provides users with sentiment analysis, market telemetry, and generative AI smart summaries using advanced Large Language Models (LLMs) and natural language processing techniques.</p>
+                
+                <div class="highlight-box" style="border-left-color: #ffb4ab; background: rgba(255, 180, 171, 0.05);">
+                    <p class="text-error font-bold mb-2 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">warning</span> Crucial AI Disclaimer
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">The AI interpretations, sentiment scores, and GenAI Smart Summaries generated by Sentio are completely automated and rely on probabilistic LLMs. <strong>These outputs are not 100% guaranteed to be accurate, comprehensive, or free of bias.</strong> The data provided is for informational purposes only. You agree that you will not use Sentio's outputs as the sole basis for making critical financial, trading, investment, or business decisions.</p>
+                </div>
+            </section>
+
+            <!-- 3. Acceptable Use & User Conduct -->
+            <section id="acceptable-use">
+                <h2><span class="material-symbols-outlined">rule</span> 3. Acceptable Use & User Conduct</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">Play nice. Don't spam our servers, don't try to steal our code, and do not use our AI to intentionally spread fake news or manipulate markets.</p>
+                </div>
+                <p>You agree to use Sentio only for lawful purposes. You strictly agree <strong>not</strong> to:</p>
+                <ul>
+                    <li><strong>Abuse the API:</strong> Spam, overload, or repeatedly poll the backend infrastructure, including but not limited to abusing the "Head-to-Head Battle Mode" or Live Feed systems.</li>
+                    <li><strong>Reverse Engineer:</strong> Attempt to decompile, reverse engineer, or extract the source code or proprietary algorithms of the backend logic or UI.</li>
+                    <li><strong>Spread Misinformation:</strong> Intentionally manipulate or use our AI-generated outputs to spread false information, market manipulation, or harmful content.</li>
+                    <li>Interfere with or disrupt the integrity or performance of the Service or third-party data provided therein.</li>
+                </ul>
+            </section>
+
+            <!-- 4. Audio and Voice Data Rules -->
+            <section id="audio-rules">
+                <h2><span class="material-symbols-outlined">mic</span> 4. Audio and Voice Data Rules</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">If you use our voice feature, we don't save the recordings permanently. Also, you must not record other people without their clear permission.</p>
+                </div>
+                <p>Sentio includes a "Live Voice Sentiment" feature that requires temporary access to your device's microphone.</p>
+                <ul>
+                    <li><strong>Temporary Processing:</strong> Microphone access is granted temporarily. Audio data is processed in real-time strictly for speech-to-text conversion and sentiment analysis. We do not permanently store or stockpile your raw voice recordings.</li>
+                    <li><strong>Consent Requirement:</strong> You are strictly prohibited from using the Live Voice Sentiment feature to record or analyze the voices of third parties without their explicit, informed consent in accordance with applicable local laws.</li>
+                </ul>
+            </section>
+
+            <!-- 5. Third-Party Services -->
+            <section id="third-party">
+                <h2><span class="material-symbols-outlined">extension</span> 5. Third-Party Services</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">We use other companies (like map providers or AI models) to make Sentio work. If their servers go down, ours might too, and we aren't responsible for their outages.</p>
+                </div>
+                <p>Our Service integrates seamlessly with various third-party external APIs and services to function effectively, including but not limited to:</p>
+                <ul>
+                    <li>Geo-Spatial mapping technologies provided by Mapbox/Leaflet.</li>
+                    <li>Database and storage infrastructure provided by MongoDB Atlas.</li>
+                    <li>External Large Language Model (LLM) providers for inference capabilities.</li>
+                </ul>
+                <p>We do not control these third-party services and are not liable for any errors, inaccuracies, delays, or downtime originating from their platforms. Your use of these integrated features is subject to the respective terms and conditions of those third parties.</p>
+            </section>
+
+            <!-- 6. Intellectual Property -->
+            <section id="intellectual-property">
+                <h2><span class="material-symbols-outlined">copyright</span> 6. Intellectual Property</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">We own the design, code, and branding of Sentio. You are allowed to use it, but you don't own it.</p>
+                </div>
+                <p>All intellectual property rights in the Service, including but not limited to the UI/UX design (glassmorphism aesthetic, layouts, animations), backend logic, proprietary telemetry algorithms, and the Sentio branding/trademarks, belong exclusively to the creator (Aaryan Verma). You are granted a limited, non-exclusive, non-transferable license to use the Service strictly in accordance with these Terms.</p>
+            </section>
+
+            <!-- 7. Disclaimer of Warranties & Limitation of Liability -->
+            <section id="disclaimer-liability">
+                <h2><span class="material-symbols-outlined">gpp_bad</span> 7. Disclaimer & Limitation of Liability</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">We provide Sentio "as is." If something breaks or you lose money because of a decision you made using our tool, we cannot be held legally responsible.</p>
+                </div>
+                <p>The Service is provided on an <strong>"AS IS" and "AS AVAILABLE"</strong> basis, without warranties of any kind, either express or implied, including, without limitation, implied warranties of merchantability, fitness for a particular purpose, or non-infringement.</p>
+                <p>In no event shall Aaryan Verma (Operating as Sentio) be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the Service.</p>
+            </section>
+
+            <!-- 8. Governing Law -->
+            <section id="governing-law">
+                <h2><span class="material-symbols-outlined">balance</span> 8. Governing Law</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">These terms are governed by the laws of India. Any legal disputes will be handled in Uttar Pradesh.</p>
+                </div>
+                <p>These Terms shall be governed and construed in accordance with the laws of the <strong>Republic of India</strong>, without regard to its conflict of law provisions. Any legal action or proceeding related to the Service shall be brought exclusively in the competent courts located in <strong>Uttar Pradesh, India</strong>, and you consent to the jurisdiction of such courts.</p>
+            </section>
+
+            <!-- 9. Contact Information -->
+            <section id="contact-information" class="mt-12 pt-8 border-t border-outline-variant/30">
+                <h2><span class="material-symbols-outlined">contact_support</span> 9. Contact Information</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">If you have any questions or concerns regarding these terms, please contact us at the email or address below.</p>
+                </div>
+                <p>If you have any questions about these Terms, please contact our Grievance Officer:</p>
+                
+                <div class="bg-surface-container/50 p-6 rounded-lg border border-outline-variant/20 mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 font-label-mono text-sm">
+                    <div>
+                        <div class="text-outline mb-1 uppercase tracking-widest text-xs">Entity Name</div>
+                        <div class="text-primary font-bold">Aaryan Verma (Operating as Sentio)</div>
+                    </div>
+                    <div>
+                        <div class="text-outline mb-1 uppercase tracking-widest text-xs">Grievance Officer</div>
+                        <div class="text-primary font-bold">Aaryan Verma</div>
+                    </div>
+                    <div>
+                        <div class="text-outline mb-1 uppercase tracking-widest text-xs">Email</div>
+                        <a href="mailto:sentio1508@gmail.com" class="text-primary font-bold hover:underline">sentio1508@gmail.com</a>
+                    </div>
+                    <div>
+                        <div class="text-outline mb-1 uppercase tracking-widest text-xs">Location</div>
+                        <div class="text-on-surface-variant leading-tight">Muzaffarnagar<br/>Uttar Pradesh<br/>India</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Back to Home Button -->
+            <div class="mt-16 flex justify-center">
+                <a href="index.html" class="px-8 py-4 bg-transparent border border-primary/50 text-primary font-bold uppercase tracking-widest hover:bg-primary hover:text-surface transition-all duration-300 rounded-lg shadow-[0_0_0_rgba(0,219,231,0)] hover:shadow-[0_0_20px_rgba(0,219,231,0.4)] flex items-center gap-2 group">
+                    <span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span> Return to Dashboard
+                </a>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

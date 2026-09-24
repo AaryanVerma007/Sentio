@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentimentAI | Intelligence Engine</title>
+    <meta name="description" content="AI-powered sentiment intelligence engine analyzing digital interactions at scale using deep learning.">
+    <!-- Fonts: High-end Geometric Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Vis.js for Constellation Network Graph -->
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <!-- Leaflet.js for Geo-Spatial Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    
+    <!-- FULL SCREEN SPLINE BACKGROUND -->
+    <div id="spline-background">
+        <canvas id="canvas3d"></canvas>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- COMMAND PALETTE (Feature 2) -->
+    <div id="command-overlay" class="modal-overlay hidden">
+        <div class="command-palette">
+            <div class="cmd-header">
+                <i class="fa-solid fa-terminal"></i>
+                <input type="text" id="cmd-input" placeholder="Search commands, topics, or actions... (Ctrl+K)">
+            </div>
+            <div class="cmd-results">
+                <div class="cmd-group">Navigation</div>
+                <div class="cmd-item" data-action="nav-vision"><i class="fa-solid fa-eye cmd-item-icon"></i> Go to Vision</div>
+                <div class="cmd-item" data-action="nav-macro"><i class="fa-solid fa-globe cmd-item-icon"></i> Go to Macro Analysis</div>
+                <div class="cmd-item" data-action="nav-micro"><i class="fa-solid fa-microchip cmd-item-icon"></i> Go to Micro Inference</div>
+                <div class="cmd-group">Actions</div>
+                <div class="cmd-item" data-action="clear-history"><i class="fa-solid fa-trash-can cmd-item-icon"></i> Clear History</div>
+                <div class="cmd-item" data-action="export-data"><i class="fa-solid fa-download cmd-item-icon"></i> Export Current Data</div>
+                <div class="cmd-item" data-action="open-share"><i class="fa-solid fa-share-nodes cmd-item-icon"></i> Share Analysis</div>
+                <div class="cmd-item" data-action="open-contact"><i class="fa-solid fa-envelope cmd-item-icon"></i> Contact / Feedback</div>
+                <div class="cmd-item" data-action="open-shortcuts"><i class="fa-solid fa-keyboard cmd-item-icon"></i> Keyboard Shortcuts</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT MODAL -->
+    <div id="contact-overlay" class="modal-overlay hidden">
+        <div class="contact-modal">
+            <div class="modal-header">
+                <h3 class="anim-text">Contact & Feedback</h3>
+                <button class="modal-close-btn" id="closeContactBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label anim-text">Name</label>
+                    <input type="text" id="contactName" class="form-input" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label anim-text">Email</label>
+                    <input type="email" id="contactEmail" class="form-input" placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label anim-text">Message</label>
+                    <textarea id="contactMessage" class="form-textarea" placeholder="Your feedback, suggestion, or question..." rows="4"></textarea>
+                </div>
+                <button id="contactSubmitBtn" class="btn-primary contact-submit">
+                    <span class="btn-text">Send Message</span>
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHARE DRAWER -->
+    <div id="share-backdrop" class="drawer-backdrop hidden"></div>
+    <div id="share-drawer" class="share-drawer">
+        <div class="drawer-header">
+            <h3 class="anim-text">Share Analysis</h3>
+            <button class="modal-close-btn" id="closeShareBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="drawer-body">
+            <button class="share-action" id="shareCopyLink">
+                <div class="share-action-icon"><i class="fa-solid fa-link"></i></div>
+                <div class="share-action-info">
+                    <span class="share-action-title">Copy Link</span>
+                    <span class="share-action-desc">Copy shareable URL to clipboard</span>
+                </div>
+                <i class="fa-solid fa-arrow-right share-arrow"></i>
+            </button>
+            <button class="share-action" id="shareCopyText">
+                <div class="share-action-icon"><i class="fa-solid fa-copy"></i></div>
+                <div class="share-action-info">
+                    <span class="share-action-title">Copy as Text</span>
+                    <span class="share-action-desc">Copy sentiment summary as plain text</span>
+                </div>
+                <i class="fa-solid fa-arrow-right share-arrow"></i>
+            </button>
+            <button class="share-action" id="shareDownloadPdf">
+                <div class="share-action-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                <div class="share-action-info">
+                    <span class="share-action-title">Download PDF</span>
+                    <span class="share-action-desc">Export full analysis report</span>
+                </div>
+                <i class="fa-solid fa-arrow-right share-arrow"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- KEYBOARD SHORTCUTS MODAL -->
+    <div id="shortcuts-overlay" class="modal-overlay hidden">
+        <div class="shortcuts-modal">
+            <div class="modal-header">
+                <h3 class="anim-text">Keyboard Shortcuts</h3>
+                <button class="modal-close-btn" id="closeShortcutsBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="shortcuts-body">
+                <div class="shortcut-group-title">Navigation</div>
+                <div class="shortcut-row"><span class="shortcut-desc">Command Palette</span><div class="shortcut-keys"><kbd>Ctrl</kbd><span>+</span><kbd>K</kbd></div></div>
+                <div class="shortcut-row"><span class="shortcut-desc">Go to Vision</span><div class="shortcut-keys"><kbd>Ctrl</kbd><span>+</span><kbd>1</kbd></div></div>
+                <div class="shortcut-row"><span class="shortcut-desc">Go to Macro Analysis</span><div class="shortcut-keys"><kbd>Ctrl</kbd><span>+</span><kbd>2</kbd></div></div>
+                <div class="shortcut-row"><span class="shortcut-desc">Go to Micro Inference</span><div class="shortcut-keys"><kbd>Ctrl</kbd><span>+</span><kbd>3</kbd></div></div>
+                <div class="shortcut-group-title">Actions</div>
+                <div class="shortcut-row"><span class="shortcut-desc">Export Report</span><div class="shortcut-keys"><kbd>Ctrl</kbd><span>+</span><kbd>E</kbd></div></div>
+                <div class="shortcut-row"><span class="shortcut-desc">Share Analysis</span><div class="shortcut-keys"><kbd>Ctrl</kbd><span>+</span><kbd>S</kbd></div></div>
+                <div class="shortcut-row"><span class="shortcut-desc">Keyboard Shortcuts</span><div class="shortcut-keys"><kbd>?</kbd></div></div>
+                <div class="shortcut-row"><span class="shortcut-desc">Close Modal</span><div class="shortcut-keys"><kbd>Esc</kbd></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION STACK -->
+    <div id="toast-stack" class="toast-stack"></div>
+
+    <div class="app-container">
+        
+        <!-- SIDEBAR (Feature 4 & 3) -->
+        <aside class="sidebar glass-panel-sharp">
+            <div class="sidebar-top">
+                <div class="logo">
+                    <span class="logo-mark"></span>
+                    <span class="anim-text">SENTIMENT.AI</span>
+                </div>
+                
+                <nav class="main-nav">
+                    <a href="#view-vision" class="nav-btn active">
+                        <i class="fa-solid fa-eye"></i> <span class="anim-text">Vision</span>
+                    </a>
+                    <a href="#view-macro" class="nav-btn">
+                        <i class="fa-solid fa-globe"></i> <span class="anim-text">Macro Analysis</span>
+                    </a>
+                    <a href="#view-summary" class="nav-btn">
+                        <i class="fa-solid fa-robot"></i> <span class="anim-text">Smart Summary</span>
+                    </a>
+
+                    <a href="#view-micro" class="nav-btn">
+                        <i class="fa-solid fa-microchip"></i> <span class="anim-text">Micro Inference</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-middle">
+                <!-- HISTORY (Feature 4) -->
+                <div class="history-module">
+                    <div class="history-header">
+                        <span class="history-title anim-text">Recent Activity</span>
+                        <button id="clearHistoryBtn" class="icon-btn" title="Clear History"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                    <div id="historyList" class="history-list">
+                        <!-- Populated by JS -->
+                        <div class="empty-history anim-text">No recent analysis.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-bottom">
+                <!-- LIVE SYSTEM STATUS (Feature 3) -->
+                <div class="system-status">
+                    <div class="status-header">
+                        <span class="status-label anim-text">System Status</span>
+                        <div class="status-indicator">
+                            <span class="pulse-dot green"></span>
+                            <span class="status-text anim-text" id="apiStatusText">ONLINE</span>
+                        </div>
+                    </div>
+                    <div class="status-details">
+                        <div class="status-row"><span>Model</span> <span class="text-accent">DistilBERT v1</span></div>
+                        <div class="status-row"><span>Latency</span> <span class="text-accent" id="pingLatency">12ms</span></div>
+                    </div>
+                </div>
+
+                <!-- SIDEBAR QUICK ACTIONS -->
+                <div class="sidebar-actions">
+                    <button class="sidebar-action-btn" id="sidebarContactBtn" title="Contact & Feedback">
+                        <i class="fa-solid fa-envelope"></i>
+                    </button>
+                    <button class="sidebar-action-btn" id="sidebarShareBtn" title="Share">
+                        <i class="fa-solid fa-share-nodes"></i>
+                    </button>
+                    <button class="sidebar-action-btn" id="sidebarShortcutsBtn" title="Keyboard Shortcuts">
+                        <i class="fa-solid fa-keyboard"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN VIEW CONTAINER (Feature 1) -->
+        <main class="view-container">
+
+            <!-- TOP HEADER BAR -->
+            <div class="top-bar">
+                <div class="top-bar-left">
+                    <span class="top-bar-breadcrumb anim-text" id="viewBreadcrumb">Vision</span>
+                </div>
+                <div class="top-bar-center">
+                    <button class="top-bar-hint" id="topBarCmdHint" title="Open Command Palette">
+                        <i class="fa-solid fa-terminal"></i>
+                        <span>Command Palette</span>
+                        <kbd>Ctrl+K</kbd>
+                    </button>
+                </div>
+                <div class="top-bar-right">
+                    <button class="top-bar-icon" id="topShareBtn" title="Share Analysis">
+                        <i class="fa-solid fa-share-nodes"></i>
+                    </button>
+                    <button class="top-bar-icon" id="topContactBtn" title="Contact & Feedback">
+                        <i class="fa-solid fa-envelope"></i>
+                    </button>
+                    <button class="top-bar-icon" id="topShortcutsBtn" title="Keyboard Shortcuts">
+                        <i class="fa-solid fa-keyboard"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- VIEW 1: VISION (Hero) -->
+            <section id="view-vision" class="view scroll-reveal">
+                <div class="hero-content">
+                    <h1 class="hero-title anim-title">
+                        <div class="line-wrapper"><span>MEASURE</span></div>
+                        <div class="line-wrapper"><span class="italic-serif text-accent">EMOTION</span></div>
+                        <div class="line-wrapper"><span>AT SCALE.</span></div>
+                    </h1>
+                    <p class="hero-subtitle anim-text">
+                        The intelligence engine processing digital interactions into pure sentiment data, utilizing an 85% accuracy deep learning model.
+                    </p>
+                    <button class="btn-primary hover-magnetic" onclick="document.getElementById('view-macro').scrollIntoView({behavior: 'smooth'})">
+                        Initiate Sequence
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- VIEW 2: MACRO ANALYSIS -->
+            <section id="view-macro" class="view scroll-reveal">
+                <div class="view-header">
+                    <div class="header-left">
+                        <h2 class="anim-text">Macro Analysis</h2>
+                        <div class="mode-toggle">
+                            <button id="modeSingleBtn" class="mode-btn active">Single</button>
+                            <button id="modeBattleBtn" class="mode-btn">Battle Mode</button>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <!-- SHARE (New) -->
+                        <button id="macroShareBtn" class="btn-secondary hidden" title="Share Analysis">
+                            <i class="fa-solid fa-share-nodes"></i> <span class="anim-text">Share</span>
+                        </button>
+                        <!-- EXPORT (Feature 5) -->
+                        <button id="exportMacroBtn" class="btn-secondary hidden" title="Export Report">
+                            <i class="fa-solid fa-download"></i> <span class="anim-text">Export PDF</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-scroll glass-panel-sharp">
+                    <!-- SINGLE SEARCH MODULE -->
+                    <div id="searchSingle" class="search-module">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="topicInput" class="minimal-input anim-text" placeholder="Type a brand, topic, or entity... (Press Enter)">
+                        <button id="topicButton" class="btn-circle hover-magnetic"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+
+                    <!-- BATTLE SEARCH MODULE -->
+                    <div id="searchBattle" class="search-module hidden">
+                        <div class="battle-input-wrapper">
+                            <i class="fa-solid fa-bolt search-icon" style="color: var(--neu-color);"></i>
+                            <input type="text" id="topicInputA" class="minimal-input anim-text" placeholder="Topic A (e.g., PS5)">
+                        </div>
+                        <div class="battle-vs anim-text">VS</div>
+                        <div class="battle-input-wrapper">
+                            <input type="text" id="topicInputB" class="minimal-input anim-text" placeholder="Topic B (e.g., Xbox)" style="text-align: right;">
+                        </div>
+                        <button id="battleButton" class="btn-circle hover-magnetic" style="margin-left: 1rem;"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+
+                    <!-- SMART RECOMMENDATIONS -->
+                    <div class="recommendations">
+                        <span class="rec-label anim-text">Trending:</span>
+                        <button class="rec-chip" data-topic="Artificial Intelligence">Artificial Intelligence</button>
+                        <button class="rec-chip" data-topic="Electric Vehicles">Electric Vehicles</button>
+                        <button class="rec-chip" data-topic="Space Exploration">Space Exploration</button>
+                    </div>
+
+                    <div id="macroLoading" class="loader-overlay hidden">
+                        <div class="cyber-spinner"></div>
+                        <div id="loadingTerminal" class="loader-text anim-text">Initializing live stream...</div>
+                    </div>
+
+                    <!-- SINGLE MODE RESULTS -->
+                    <div id="topicResults" class="dashboard hidden">
+                        <div class="live-status-bar">
+                            <span class="pulse-dot green" id="singleLiveDot"></span>
+                            <span class="anim-text" id="singleLiveStatus">Collecting Data...</span>
+                            <span class="live-stats anim-text" id="singleLiveStats">0 Mentions</span>
+                        </div>
+                        <div class="bento-grid" style="margin-top: 1rem;">
+                            <!-- Score Card -->
+                            <div class="data-card glow-border bento-col-span-1" style="justify-content: center; align-items: center; text-align: center;">
+                                <i class="fa-solid fa-bolt card-icon"></i>
+                                <h4 class="anim-text">Aggregated Score</h4>
+                                <div class="score-display">
+                                    <div id="finalScore" class="massive-score">0.0</div>
+                                    <p class="anim-text">Scale: -10 (Negative) to +10 (Positive)</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Distribution Card -->
+                            <div class="data-card glow-border bento-col-span-1">
+                                <i class="fa-solid fa-chart-pie card-icon" style="color: var(--neu-color);"></i>
+                                <h4 class="anim-text">Distribution</h4>
+                                <div class="chart-canvas-wrapper" style="flex: 1; min-height: 180px;">
+                                    <canvas id="sentimentChart"></canvas>
+                                </div>
+                                <div class="chart-legend" style="margin-top: auto;">
+                                    <div class="legend-item"><span class="dot pos"></span> <span class="anim-text">Positive</span> <span class="pct" id="posPercent">0%</span></div>
+                                    <div class="legend-item"><span class="dot neu"></span> <span class="anim-text">Neutral</span> <span class="pct" id="neuPercent">0%</span></div>
+                                    <div class="legend-item"><span class="dot neg"></span> <span class="anim-text">Negative</span> <span class="pct" id="negPercent">0%</span></div>
+                                </div>
+                                <div class="total-processed anim-text" style="font-size: 0.8rem;">Sample Size: <span id="totalCount" class="text-accent">0</span></div>
+                            </div>
+
+                            <!-- Trend Card -->
+                            <div class="data-card glow-border bento-col-span-1">
+                                <i class="fa-solid fa-chart-line card-icon"></i>
+                                <h4 class="anim-text">7-Day Trend</h4>
+                                <div class="chart-canvas-wrapper" style="flex: 1; min-height: 200px;">
+                                    <canvas id="trendChart"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Signals Area (Spans full width) -->
+                            <div class="data-card glow-border bento-col-span-3">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <i class="fa-solid fa-satellite-dish card-icon" style="margin: 0; font-size: 1.5rem;"></i>
+                                    <h4 class="anim-text">Live Signal Streams</h4>
+                                </div>
+                                <div class="dashboard-panel signals-panel" style="background: transparent; border: none; box-shadow: none; margin: 0; padding: 0;">
+                                    <div class="signals-column">
+                                        <h3 class="panel-title pos-title anim-text"><i class="fa-solid fa-arrow-trend-up"></i> Positive Signals</h3>
+                                        <div id="posSamples" class="sample-list scrollable-list"></div>
+                                    </div>
+                                    <div class="signals-column">
+                                        <h3 class="panel-title neu-title anim-text" style="color: var(--neu-color);"><i class="fa-solid fa-minus"></i> Neutral Signals</h3>
+                                        <div id="neuSamples" class="sample-list scrollable-list"></div>
+                                    </div>
+                                    <div class="signals-column">
+                                        <h3 class="panel-title neg-title anim-text"><i class="fa-solid fa-arrow-trend-down"></i> Critical Signals</h3>
+                                        <div id="negSamples" class="sample-list scrollable-list"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BATTLE MODE RESULTS -->
+                    <div id="battleResults" class="battle-dashboard hidden">
+                        <div class="battle-winner-indicator" id="battleWinner">
+                            <span class="winner-label">Winner</span>
+                            <span class="winner-name" id="winnerName">Too Close to Call</span>
+                        </div>
+                        
+                        <!-- TOPIC A -->
+                        <div class="battle-column">
+                            <h3 class="battle-topic-title anim-text" id="battleTitleA">Topic A</h3>
+                            <div class="live-status-bar">
+                                <span class="pulse-dot green" id="battleLiveDotA"></span>
+                                <span class="anim-text" id="battleLiveStatusA">Collecting...</span>
+                                <span class="live-stats anim-text" id="battleLiveStatsA">0</span>
+                            </div>
+                            <div class="dashboard-panel score-panel">
+                                <div id="battleScoreA" class="massive-score">0.0</div>
+                            </div>
+                            <div class="dashboard-panel chart-panel">
+                                <div class="chart-canvas-wrapper" style="height: 160px;">
+                                    <canvas id="sentimentChartA"></canvas>
+                                </div>
+                                <div class="battle-legend">
+                                    <span class="pct pos-title" id="posPercentA">0%</span>
+                                    <span class="pct neu-title" id="neuPercentA">0%</span>
+                                    <span class="pct neg-title" id="negPercentA">0%</span>
+                                </div>
+                            </div>
+                            <div class="dashboard-panel feed-panel">
+                                <h3 class="panel-title anim-text">Live Feed</h3>
+                                <div id="battleFeedA" class="sample-list scrollable-list" style="height: 250px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- TOPIC B -->
+                        <div class="battle-column">
+                            <h3 class="battle-topic-title anim-text" id="battleTitleB" style="text-align: right;">Topic B</h3>
+                            <div class="live-status-bar" style="justify-content: flex-end;">
+                                <span class="live-stats anim-text" id="battleLiveStatsB">0</span>
+                                <span class="anim-text" id="battleLiveStatusB">Collecting...</span>
+                                <span class="pulse-dot green" id="battleLiveDotB"></span>
+                            </div>
+                            <div class="dashboard-panel score-panel">
+                                <div id="battleScoreB" class="massive-score">0.0</div>
+                            </div>
+                            <div class="dashboard-panel chart-panel">
+                                <div class="chart-canvas-wrapper" style="height: 160px;">
+                                    <canvas id="sentimentChartB"></canvas>
+                                </div>
+                                <div class="battle-legend">
+                                    <span class="pct pos-title" id="posPercentB">0%</span>
+                                    <span class="pct neu-title" id="neuPercentB">0%</span>
+                                    <span class="pct neg-title" id="negPercentB">0%</span>
+                                </div>
+                            </div>
+                            <div class="dashboard-panel feed-panel">
+                                <h3 class="panel-title anim-text">Live Feed</h3>
+                                <div id="battleFeedB" class="sample-list scrollable-list" style="height: 250px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- VIEW: SMART SUMMARY -->
+            <section id="view-summary" class="view scroll-reveal">
+                <div class="view-header">
+                    <h2 class="anim-text">Smart GenAI Summary</h2>
+                </div>
+                <div class="dashboard-panel summary-panel">
+                    <div class="summary-content anim-text" id="genaiSummaryText">
+                        Awaiting data to generate actionable insights...
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- VIEW 3: MICRO INFERENCE -->
+            <section id="view-micro" class="view scroll-reveal">
+                <div class="view-header">
+                    <h2 class="anim-text">Micro Inference</h2>
+                </div>
+
+                <div class="pipeline-flow" style="margin-top: 2rem;">
+                    <div class="pipeline-line"></div>
+                    
+                    <!-- Node 1: Input -->
+                    <div class="pipeline-node active-node" id="nodeInput">
+                        <div class="pipeline-icon"><i class="fa-solid fa-microphone"></i></div>
+                        <div class="pipeline-title">Raw Source</div>
+                        <div class="pipeline-desc">Voice / Text Stream</div>
+                        
+                        <div style="margin-top: 1rem; width: 100%;">
+                            <textarea id="singleInput" class="minimal-textarea anim-text" placeholder="Enter text..." style="height: 60px; min-height: 60px; padding: 0.5rem;"></textarea>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                                <button id="voiceBtn" class="btn-icon hover-magnetic" title="Live Voice"><i class="fa-solid fa-microphone"></i></button>
+                                <button id="singleButton" class="btn-primary hover-magnetic" style="padding: 0.5rem 1rem;">Analyze</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <i class="fa-solid fa-arrow-right pipeline-arrow"></i>
+                    
+                    <!-- Node 2: Processing -->
+                    <div class="pipeline-node" id="nodeProcessing">
+                        <div class="pipeline-icon"><i class="fa-solid fa-microchip"></i></div>
+                        <div class="pipeline-title">Inference Engine</div>
+                        <div class="pipeline-desc">NLP Processing</div>
+                        
+                        <div id="microIdle" class="empty-state anim-text" style="font-size: 0.8rem; padding: 0; margin-top: 1rem; border: none; background: transparent;">
+                            Awaiting input stream...
+                        </div>
+                        <div id="microLoading" class="loader-overlay hidden" style="position: relative; background: transparent; padding: 0; min-height: 50px;">
+                            <div class="cyber-spinner" style="width: 24px; height: 24px; border-width: 2px;"></div>
+                            <div class="loader-text anim-text typewriter" style="font-size: 0.8rem; margin-top: 0.5rem;">Computing...</div>
+                        </div>
+                    </div>
+                    
+                    <i class="fa-solid fa-arrow-right pipeline-arrow"></i>
+                    
+                    <!-- Node 3: Output -->
+                    <div class="pipeline-node" id="nodeOutput">
+                        <div class="pipeline-icon"><i class="fa-solid fa-chart-column"></i></div>
+                        <div class="pipeline-title">Actionable Data</div>
+                        <div class="pipeline-desc">Classification Stream</div>
+                        
+                        <div id="singleResult" class="result-card hidden" style="width: 100%; margin-top: 1rem; padding: 0.5rem; border: none; background: transparent;">
+                            <div class="result-top" style="margin-bottom: 0.5rem;">
+                                <span class="result-label anim-text">Result</span>
+                                <span id="singleSentiment" class="result-badge">Neu</span>
+                            </div>
+                            
+                            <div class="confidence-meters" style="gap: 0.25rem;">
+                                <div class="meter">
+                                    <div class="meter-info anim-text" style="font-size: 0.7rem;"><span>Pos</span><span id="txtPos">0%</span></div>
+                                    <div class="meter-bar"><div id="barPos" class="meter-fill pos-fill"></div></div>
+                                </div>
+                                <div class="meter">
+                                    <div class="meter-info anim-text" style="font-size: 0.7rem;"><span>Neg</span><span id="txtNeg">0%</span></div>
+                                    <div class="meter-bar"><div id="barNeg" class="meter-fill neg-fill"></div></div>
+                                </div>
+                            </div>
+                            
+                            <div class="dial-container hidden" id="sentimentDialContainer" style="margin-top: 1rem;">
+                                <div class="dial-header anim-text" style="font-size: 0.75rem;">Live Voice Sentiment</div>
+                                <div class="speedometer" style="height: 60px; margin-top: 0.5rem;">
+                                    <div class="dial-needle" id="dialNeedle"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="result-bottom anim-text" style="font-size: 0.7rem; margin-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.5rem;">
+                                Conf: <span id="singleConfidence" class="text-accent">0.0%</span> | Score: <span id="singleScore" class="text-accent">0.0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        
+        </main>
+    </div>
+
+    <!-- External Libraries & Main Logic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="/script.js"></script>
+    
+    <!-- Spline 3D Scene -->
+    <script type="module">
+        import { Application } from 'https://esm.sh/@splinetool/runtime';
+        const canvas = document.getElementById('canvas3d');
+        const spline = new Application(canvas);
+        spline.load('https://prod.spline.design/oX3SKogRP7wssjJU/scene.splinecode');
+    </script>
+</body>
+</html>

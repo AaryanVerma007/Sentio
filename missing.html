@@ -1,0 +1,195 @@
+                <div class="mb-8 reveal-item reveal-hidden">
+                    <h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg tracking-tight mb-2">AI Summary</h3>
+                    <p class="font-label-mono text-label-mono text-primary uppercase tracking-widest">Sentiment Context</p>
+                </div>
+                <div class="max-w-4xl reveal-item reveal-hidden">
+                    <div id="genaiSummaryText" class="font-body-md text-primary bg-surface-container/50 p-8 rounded-lg shadow-[0_0_15px_rgba(0,219,231,0.1)] glow-border leading-relaxed text-xl min-h-[100px]">
+                        <!-- Summary content injected via JS -->
+                        <span class="text-outline">Waiting for analysis to complete...</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Pipeline Flow -->
+            <section class="px-margin-mobile md:px-margin-desktop py-24 border-t border-outline-variant/10 relative" id="data-pipeline">
+                <div class="absolute inset-0 bg-surface/30 backdrop-blur-sm -z-10"></div>
+                <div class="mb-16 text-center reveal-item reveal-hidden">
+                    <h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg tracking-tight mb-2">Data Pipeline</h3>
+                    <p class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-widest">Ingest to Inference</p>
+                </div>
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8 max-w-5xl mx-auto relative">
+                    <!-- Connecting line -->
+                    <div class="hidden md:block absolute top-1/2 left-0 w-full h-[1px] bg-outline-variant/30 -z-10"></div>
+                    <div class="flex flex-col items-center gap-4 bg-surface/80 p-6 rounded-lg border border-outline-variant/20 z-10 w-48 text-center glow-border reveal-item reveal-hidden" style="transition-delay: 0.1s;">
+                        <div class="w-12 h-12 rounded bg-surface-container flex items-center justify-center text-on-surface">
+                            <span class="material-symbols-outlined">rss_feed</span>
+                        </div>
+                        <h5 class="font-bold text-sm uppercase tracking-wider">Raw Sources</h5>
+                        <p class="text-xs text-on-surface-variant font-label-mono">Voice / Text Stream</p>
+                    </div>
+                    <span class="material-symbols-outlined text-outline-variant rotate-90 md:rotate-0 reveal-item reveal-hidden" style="transition-delay: 0.2s;">arrow_forward</span>
+                    <div class="flex flex-col items-center gap-4 bg-surface-container-high/90 p-6 rounded-lg border border-primary/30 z-10 w-48 text-center shadow-[0_0_20px_rgba(0,219,231,0.1)] relative overflow-hidden reveal-item reveal-hidden hover:-translate-y-1 transition-transform" style="transition-delay: 0.3s;">
+                        <div class="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent"></div>
+                        <div class="w-12 h-12 rounded bg-primary/20 flex items-center justify-center text-primary relative z-10">
+                            <span class="material-symbols-outlined">hub</span>
+                        </div>
+                        <h5 class="font-bold text-sm uppercase tracking-wider text-primary relative z-10">Inference Engine</h5>
+                        <p class="text-xs text-on-surface-variant font-label-mono relative z-10">NLP Processing</p>
+                    </div>
+                    <span class="material-symbols-outlined text-outline-variant rotate-90 md:rotate-0 reveal-item reveal-hidden" style="transition-delay: 0.4s;">arrow_forward</span>
+                    <div class="flex flex-col items-center gap-4 bg-surface/80 p-6 rounded-lg border border-outline-variant/20 z-10 w-48 text-center glow-border reveal-item reveal-hidden" style="transition-delay: 0.5s;">
+                        <div class="w-12 h-12 rounded bg-surface-container flex items-center justify-center text-on-surface">
+                            <span class="material-symbols-outlined">terminal</span>
+                        </div>
+                        <h5 class="font-bold text-sm uppercase tracking-wider">Actionable Data</h5>
+                        <p class="text-xs text-on-surface-variant font-label-mono">Classification Stream</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Micro Inference -->
+            <section class="px-margin-mobile md:px-margin-desktop py-24 border-t border-outline-variant/10 relative" id="micro-inference">
+                <div class="absolute inset-0 bg-surface-container-low/50 backdrop-blur-sm -z-10"></div>
+                <div class="mb-12 reveal-item reveal-hidden">
+                    <h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg tracking-tight mb-2">Micro Inference</h3>
+                    <p class="font-label-mono text-label-mono text-primary uppercase tracking-widest">Direct Neural Classification</p>
+                </div>
+                
+                <div class="data-card p-8 rounded-lg flex flex-col md:flex-row gap-8 glow-border reveal-item reveal-hidden" style="transition-delay: 0.2s;">
+                    <!-- LEFT COLUMN: INPUT -->
+                    <div class="flex-1 flex flex-col gap-4">
+                        <h4 class="font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">keyboard</span> Input Stream</h4>
+                        <textarea id="singleInput" class="w-full h-40 bg-surface-container/50 border border-outline-variant/30 rounded p-4 text-on-surface focus:border-primary focus:outline-none bg-transparent resize-none transition-colors" placeholder="Enter text for direct neural classification..."></textarea>
+                        
+                        <div class="flex gap-4 items-center mt-2">
+                            <button id="voiceBtn" class="flex items-center justify-center bg-surface-container hover:bg-primary/20 hover:text-primary border border-outline-variant/30 rounded transition-colors shadow-[0_0_10px_rgba(0,0,0,0.5)]" title="Live Voice" style="width: 64px; height: 64px; border-radius: 50%;">
+                                <span class="material-symbols-outlined text-3xl">mic</span>
+                            </button>
+                            <button id="singleButton" class="py-4 px-8 bg-primary text-on-primary font-bold uppercase tracking-wider hover:bg-primary-fixed transition-all rounded shadow-[0_0_15px_rgba(0,219,231,0.3)] hover:shadow-[0_0_25px_rgba(0,219,231,0.5)]">Initialize Inference</button>
+                        </div>
+                    </div>
+                    
+                    <!-- RIGHT COLUMN: OUTPUT -->
+                    <div class="flex-1 flex flex-col gap-4 md:border-l md:border-outline-variant/20 md:pl-8">
+                        <h4 class="font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">analytics</span> Classification Result</h4>
+                        
+                        <div id="microIdle" class="text-sm text-on-surface-variant py-8 flex flex-col items-center justify-center flex-1">
+                            <span class="material-symbols-outlined text-4xl mb-4 opacity-50">hourglass_empty</span>
+                            Awaiting input stream...
+                        </div>
+                        
+                        <div id="microLoading" class="hidden text-sm text-primary py-8 flex flex-col items-center justify-center flex-1 animate-pulse">
+                            <div class="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+                            Computing tensors...
+                        </div>
+                        
+                        <div id="singleResult" class="hidden flex-col gap-6 flex-1">
+                            <div class="flex justify-between items-center bg-surface-container/50 p-4 rounded-lg">
+                                <span class="text-sm font-label-mono text-outline">PRIMARY SENTIMENT</span>
+                                <span id="singleSentiment" class="px-4 py-2 bg-surface-container rounded font-bold text-lg border border-outline-variant/20 shadow-[0_0_10px_rgba(255,255,255,0.05)]">Neu</span>
+                            </div>
+                            
+                            <div class="flex flex-col gap-4 px-2">
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex justify-between text-xs font-label-mono"><span class="text-secondary-fixed">POS</span><span id="txtPos" class="text-secondary-fixed">0%</span></div>
+                                    <div class="w-full h-3 bg-surface-container rounded overflow-hidden shadow-inner"><div id="barPos" class="h-full bg-secondary-fixed rounded transition-all duration-500 ease-out" style="width:0%"></div></div>
+                                </div>
+                                
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex justify-between text-xs font-label-mono"><span class="text-error">NEG</span><span id="txtNeg" class="text-error">0%</span></div>
+                                    <div class="w-full h-3 bg-surface-container rounded overflow-hidden shadow-inner"><div id="barNeg" class="h-full bg-error rounded transition-all duration-500 ease-out" style="width:0%"></div></div>
+                                </div>
+                            </div>
+                            
+                            <div id="sentimentDialContainer" class="hidden mt-4 pt-4 border-t border-outline-variant/20">
+                                <div class="text-[10px] font-label-mono text-outline text-center mb-2 uppercase tracking-widest">Live Voice Activity</div>
+                                <div class="w-full h-[60px] bg-surface-container/30 rounded-t-full relative overflow-hidden border border-outline-variant/10 border-b-0">
+                                    <div id="dialNeedle" class="absolute bottom-0 left-1/2 w-1 h-[50px] bg-primary origin-bottom shadow-[0_0_5px_#00dbe7]" style="transform: translate(-50%, 0) rotate(0deg); transition: transform 0.2s;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-auto text-[10px] font-label-mono text-outline pt-4 border-t border-outline-variant/20 flex justify-between">
+                                <span>CONF: <span id="singleConfidence" class="text-primary font-bold">0%</span></span>
+                                <span>SCORE: <span id="singleScore" class="text-primary font-bold">0</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="flex justify-between items-center px-margin-desktop py-10 w-full bg-surface-container-lowest/80 dark:bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant/10 mt-auto">
+                <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tighter">SENTIMENT.</div>
+                <div class="hidden md:flex gap-8 items-center">
+                    <a href="privacy_policy.html" target="_blank" class="text-on-surface-variant text-[14px] uppercase tracking-wider font-bold hover:text-primary transition-colors">Privacy Policy</a>
+                    <a href="terms.html" target="_blank" class="text-on-surface-variant text-[14px] uppercase tracking-wider font-bold hover:text-primary transition-colors">Terms of Service</a>
+                    <a href="cookies.html" target="_blank" class="text-on-surface-variant text-[14px] uppercase tracking-wider font-bold hover:text-primary transition-colors">Cookie Policy</a>
+                    
+                    <div class="flex items-center gap-4 ml-8 pl-8 border-l border-outline-variant/20">
+                        <button class="footer-action-btn text-on-surface-variant"><span class="material-symbols-outlined">share</span></button>
+                        <button class="footer-action-btn text-on-surface-variant"><span class="material-symbols-outlined">mail</span></button>
+                        <button class="footer-action-btn text-on-surface-variant"><span class="material-symbols-outlined">keyboard</span></button>
+                    </div>
+                </div>
+                <div class="font-label-mono text-label-mono text-secondary dark:text-secondary-fixed">
+                    © 2026 SENTIMENT ANALYTICS
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Hidden PDF Report Template -->
+    <div id="pdf-report-template" class="hidden">
+        <div class="pdf-container">
+            <div class="pdf-header">
+                <h1>Sentiment Analytics Report</h1>
+                <p>Fine Aggregate Score Distribution & 7-Day Trends</p>
+                <div class="pdf-timestamp" id="pdf-timestamp"></div>
+            </div>
+            
+            <div class="pdf-row">
+                <div class="pdf-col pdf-chart-col">
+                    <h2>Fine Aggregate Score Distribution</h2>
+                    <div id="pdf-percentages" class="pdf-stats"></div>
+                    <img id="pdf-doughnut-img" src="" alt="Score Distribution">
+                </div>
+                <div class="pdf-col pdf-trend-col">
+                    <h2>7-Day Sentiment Trends</h2>
+                    <img id="pdf-trend-img" src="" alt="7-Day Trends">
+                </div>
+            </div>
+
+            <div class="pdf-signals-section">
+                <h2>Live Signals Breakdown</h2>
+                <div class="pdf-signals-grid">
+                    <div class="pdf-signal-col">
+                        <h3 class="pos-text">Positive</h3>
+                        <div id="pdf-pos-samples"></div>
+                    </div>
+                    <div class="pdf-signal-col">
+                        <h3 class="neu-text">Neutral</h3>
+                        <div id="pdf-neu-samples"></div>
+                    </div>
+                    <div class="pdf-signal-col">
+                        <h3 class="neg-text">Negative</h3>
+                        <div id="pdf-neg-samples"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pdf-summary-section">
+                <h2>AI Executive Summary</h2>
+                <p id="pdf-ai-summary"></p>
+            </div>
+            
+            <div class="pdf-footer">
+                <p>CONFIDENTIAL AND PROPRIETARY. GENERATED BY SENTIMENT ANALYTICS.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- html2pdf.js for Client-Side PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

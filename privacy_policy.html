@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html class="dark scroll-smooth" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Privacy Policy | Sentio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Inter:wght@400;700&family=JetBrains+Mono:wght@500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#e1fdff",
+                        "surface": "#0d1515",
+                        "surface-container": "#192122",
+                        "surface-container-low": "#151d1e",
+                        "surface-container-lowest": "#080f10",
+                        "on-surface": "#dce4e4",
+                        "on-surface-variant": "#b9cacb",
+                        "outline": "#849495",
+                        "outline-variant": "#3a494b",
+                        "secondary-fixed": "#72ff70",
+                        "error": "#ffb4ab"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Montserrat"],
+                        "headline-lg": ["Montserrat"],
+                        "body-md": ["Inter"],
+                        "label-mono": ["JetBrains Mono"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            font-size: 87.5%;
+            /* Reduces 1rem from 16px to 14px */
+        }
+
+        body {
+            background-color: #0d1515;
+            color: #dce4e4;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Background Elements */
+        .interactive-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 50vw;
+            height: 50vh;
+            background: radial-gradient(circle, rgba(0, 219, 231, 0.08) 0%, transparent 60%);
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(60px);
+        }
+
+        .ambient-glow-2 {
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 60vw;
+            height: 60vh;
+            background: radial-gradient(circle, rgba(114, 255, 112, 0.05) 0%, transparent 60%);
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(60px);
+        }
+
+        .data-card {
+            background: rgba(25, 33, 34, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(132, 148, 149, 0.15);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .data-card:hover {
+            border-color: rgba(0, 219, 231, 0.3);
+            box-shadow: 0 0 20px rgba(0, 219, 231, 0.1);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(0, 219, 231, 0.4);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(13, 21, 21, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 219, 231, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 219, 231, 0.6);
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #e1fdff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(132, 148, 149, 0.2);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 .material-symbols-outlined {
+            color: #00dbe7;
+            font-size: 1.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+            color: #b9cacb;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #b9cacb;
+        }
+
+        li::before {
+            content: "•";
+            color: #00dbe7;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        strong {
+            color: #e1fdff;
+        }
+
+        .highlight-box {
+            background: rgba(0, 219, 231, 0.05);
+            border-left: 4px solid #00dbe7;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-primary/30 selection:text-primary">
+
+    <!-- Background Elements -->
+    <div class="interactive-grid"></div>
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow-2"></div>
+
+    <div class="max-w-4xl mx-auto px-6 py-16 md:py-24">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <div
+                class="inline-flex items-center justify-center p-4 rounded-full bg-surface-container border border-outline-variant/30 mb-6 shadow-[0_0_30px_rgba(0,219,231,0.15)]">
+                <span
+                    class="material-symbols-outlined text-5xl text-primary drop-shadow-[0_0_10px_rgba(0,219,231,0.5)]">shield_locked</span>
+            </div>
+            <h1
+                class="font-display-lg text-4xl md:text-6xl font-extrabold text-primary mb-4 tracking-tight glow-text uppercase">
+                Privacy Policy
+            </h1>
+            <div
+                class="font-label-mono text-outline uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-secondary-fixed animate-pulse"></span>
+                Last Updated: August 13, 2026
+            </div>
+        </div>
+
+        <!-- Main Content Glass Card -->
+        <div class="data-card rounded-2xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+            <!-- Decorative corner accent -->
+            <div
+                class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full pointer-events-none">
+            </div>
+
+            <!-- 1. Introduction -->
+            <section id="introduction">
+                <h2><span class="material-symbols-outlined">waving_hand</span> 1. Introduction</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">Welcome! This policy explains how we collect, use,
+                        and protect your personal information when you use our services. We value your privacy and aim
+                        to be fully transparent about our data practices.</p>
+                </div>
+                <p>Welcome to <strong>Aaryan Verma</strong> ("we," "our," or "us"). This Privacy Policy governs your use
+                    of our website and any associated services, applications, or platforms (collectively, the
+                    "Services").</p>
+                <p>This Privacy Policy is designed to comply with applicable data protection regulations, including the
+                    Indian Digital Personal Data Protection Act, 2023 ("DPDPA"). By accessing or using our Services, you
+                    signify your understanding of and agreement to the collection, processing, and sharing of your
+                    personal data as described in this policy.</p>
+            </section>
+
+            <!-- 2. Information We Collect -->
+            <section id="information-we-collect">
+                <h2><span class="material-symbols-outlined">data_object</span> 2. Information We Collect</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">We collect information you give us directly (like
+                        your name and email when creating an account) and information we collect automatically (like
+                        your IP address and how you navigate our site).</p>
+                </div>
+                <p>We collect various types of information to provide and improve our Services to you:</p>
+                <ul>
+                    <li><strong>Personal Data Provided by You:</strong> We collect personal information that you
+                        voluntarily provide to us when registering for the Services, expressing an interest in obtaining
+                        information about us, or otherwise contacting us. This may include your name, email address,
+                        phone number, postal address, and account credentials.</li>
+                    <li><strong>Sensitive Personal Data:</strong> Unless strictly necessary and with your explicit
+                        consent, we do not intentionally collect sensitive personal data (such as financial information,
+                        health data, or biometric data).</li>
+                    <li><strong>Automatically Collected Data (Usage Data):</strong> When you access our Services, we
+                        automatically collect certain information. This does not reveal your specific identity but may
+                        include device and usage information, such as your IP address, browser and device
+                        characteristics, operating system, referring URLs, device name, country, location, and
+                        information about how and when you use our Services.</li>
+                </ul>
+            </section>
+
+            <!-- 3. How We Use Your Data -->
+            <section id="how-we-use-your-data">
+                <h2><span class="material-symbols-outlined">settings_suggest</span> 3. How We Use Your Data</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">We use your data primarily to provide you with our
+                        services, keep your account secure, respond to your support requests, and occasionally send you
+                        updates or marketing (which you can opt out of).</p>
+                </div>
+                <p>We process your personal data under the following lawful bases and for the specified purposes:</p>
+                <ul>
+                    <li><strong>To Provide and Maintain Services:</strong> To create and manage your account, deliver
+                        the requested services, and fulfill our contractual obligations to you.</li>
+                    <li><strong>For Communication:</strong> To respond to your inquiries, send you administrative
+                        information, and provide customer support.</li>
+                    <li><strong>To Improve Our Services:</strong> To analyze usage trends, evaluate the effectiveness of
+                        our promotional campaigns, and enhance the user experience.</li>
+                    <li><strong>For Security and Fraud Prevention:</strong> To protect our Services, monitor against
+                        unauthorized access, and ensure compliance with our terms and legal obligations.</li>
+                    <li><strong>Marketing (With Consent):</strong> To send you marketing and promotional communications,
+                        subject to your right to opt out at any time.</li>
+                </ul>
+            </section>
+
+            <!-- 4. Cookies and Tracking Technologies -->
+            <section id="cookies">
+                <h2><span class="material-symbols-outlined">cookie</span> 4. Cookies and Tracking Technologies</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">We use cookies (small text files saved on your
+                        device) to remember your preferences and see how people use our site. You can control or disable
+                        cookies through your browser settings.</p>
+                </div>
+                <p>We may use cookies, web beacons, pixels, and similar tracking technologies to access or store
+                    information. These technologies help us:</p>
+                <ul>
+                    <li>Keep you signed in and remember your preferences (Essential Cookies).</li>
+                    <li>Understand how visitors interact with our website (Analytics Cookies).</li>
+                </ul>
+                <p>You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
+                    However, if you do not accept cookies, you may not be able to use some portions of our Services.</p>
+            </section>
+
+            <!-- 5. Third-Party Sharing and Integrations -->
+            <section id="third-party-sharing">
+                <h2><span class="material-symbols-outlined">share</span> 5. Third-Party Sharing and Integrations</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">We do not sell your personal data. We only share it
+                        with trusted third-party service providers who help us run our business, or if required by law.
+                    </p>
+                </div>
+                <p>We may share your data in the following situations:</p>
+                <ul>
+                    <li><strong>Service Providers (Data Processors):</strong> We may share your personal data with
+                        third-party vendors, service providers, contractors, or agents who perform services for us or on
+                        our behalf. We enforce strict data processing agreements with these entities to ensure DPDPA
+                        compliance.</li>
+                    <li><strong>Business Transfers:</strong> We may share or transfer your information in connection
+                        with, or during negotiations of, any merger, sale of company assets, financing, or acquisition.
+                    </li>
+                    <li><strong>Legal Obligations:</strong> We may disclose your information where we are legally
+                        required to do so in order to comply with applicable law, governmental requests, or legal
+                        process.</li>
+                </ul>
+            </section>
+
+            <!-- 6. User Rights and Data Control -->
+            <section id="user-rights">
+                <h2><span class="material-symbols-outlined">manage_accounts</span> 6. User Rights and Data Control</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">You own your data. You can ask us to show you what
+                        data we have, correct it if it's wrong, delete it, or withdraw your permission for us to use it
+                        at any time.</p>
+                </div>
+                <p>In accordance with the Indian Digital Personal Data Protection Act, 2023, and other applicable
+                    privacy laws, you possess the following rights regarding your personal data:</p>
+                <ul>
+                    <li><strong>Right to Information:</strong> You have the right to request a summary of the personal
+                        data being processed by us and the processing activities undertaken.</li>
+                    <li><strong>Right to Correction and Erasure:</strong> You can request the correction of inaccurate
+                        or misleading personal data, completion of incomplete data, or the erasure of personal data that
+                        is no longer necessary.</li>
+                    <li><strong>Right to Withdraw Consent:</strong> Where we rely on your consent to process your data,
+                        you have the right to withdraw that consent at any time.</li>
+                    <li><strong>Right to Nominate:</strong> You have the right to nominate another individual to
+                        exercise your data rights in the event of your death or incapacity.</li>
+                    <li><strong>Right to Grievance Redressal:</strong> You have the right to have readily available
+                        means of grievance redressal provided by us.</li>
+                </ul>
+            </section>
+
+            <!-- 7. Data Security Measures -->
+            <section id="data-security">
+                <h2><span class="material-symbols-outlined">security</span> 7. Data Security Measures</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">We use industry-standard security measures to keep
+                        your data safe. However, no system on the internet is 100% secure.</p>
+                </div>
+                <p>We implement appropriate technical and organizational security measures designed to protect the
+                    security of any personal information we process. This includes encryption, secure server hosting,
+                    and regular security audits. Despite our safeguards, no electronic transmission over the Internet
+                    can be guaranteed to be 100% secure.</p>
+            </section>
+
+            <!-- 8. Children's Privacy -->
+            <section id="childrens-privacy">
+                <h2><span class="material-symbols-outlined">child_care</span> 8. Children's Privacy</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">Our services are not intended for users under the
+                        age of 18. We do not knowingly collect personal data from children without verifiable parental
+                        consent.</p>
+                </div>
+                <p>We do not knowingly solicit data from or market to children under 18 years of age. By using the
+                    Services, you represent that you are at least 18 or that you are the parent or guardian of such a
+                    minor and consent to such minor dependent’s use of the Services.</p>
+            </section>
+
+            <!-- 9. Contact Information -->
+            <section id="contact-information" class="mt-12 pt-8 border-t border-outline-variant/30">
+                <h2><span class="material-symbols-outlined">contact_support</span> 9. Contact Information</h2>
+                <div class="highlight-box">
+                    <p class="text-primary font-bold mb-1 uppercase tracking-wide text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">summarize</span> TL;DR
+                    </p>
+                    <p class="mb-0 text-on-surface-variant text-sm">If you have any questions or concerns regarding your
+                        data, please contact our Grievance Officer.</p>
+                </div>
+                <p>In accordance with the Digital Personal Data Protection Act, 2023, the contact details of our
+                    Grievance Officer are provided below. If you have questions or comments about this policy, or wish
+                    to exercise your data rights, you may contact us at:</p>
+
+                <div
+                    class="bg-surface-container/50 p-6 rounded-lg border border-outline-variant/20 mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 font-label-mono text-sm">
+                    <div>
+                        <div class="text-outline mb-1 uppercase tracking-widest text-xs">Entity Name</div>
+                        <div class="text-primary font-bold">Aaryan Verma</div>
+                    </div>
+                    <div>
+                        <div class="text-outline mb-1 uppercase tracking-widest text-xs">Grievance Officer</div>
+                        <div class="text-primary font-bold">Aaryan Verma</div>
+                    </div>
+                    <div>
+                        <div class="text-outline mb-1 uppercase tracking-widest text-xs">Email</div>
+                        <a href="mailto:sentio1508@gmail.com"
+                            class="text-primary font-bold hover:underline">sentio1508@gmail.com</a>
+                    </div>
+                    <div>
+                        <div class="text-outline mb-1 uppercase tracking-widest text-xs">Location</div>
+                        <div class="text-on-surface-variant leading-tight">Muzaffarnagar<br />Uttar Pradesh<br />India
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Back to Home Button -->
+            <div class="mt-16 flex justify-center">
+                <a href="index.html"
+                    class="px-8 py-4 bg-transparent border border-primary/50 text-primary font-bold uppercase tracking-widest hover:bg-primary hover:text-surface transition-all duration-300 rounded-lg shadow-[0_0_0_rgba(0,219,231,0)] hover:shadow-[0_0_20px_rgba(0,219,231,0.4)] flex items-center gap-2 group">
+                    <span
+                        class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                    Return to Dashboard
+                </a>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

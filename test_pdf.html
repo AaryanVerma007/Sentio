@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body { background: #333; color: white; }
+        #hidden-pdf-export-container {
+            display: none;
+        }
+        body.exporting-pdf > *:not(#hidden-pdf-export-container) {
+            display: none !important;
+        }
+        body.exporting-pdf #hidden-pdf-export-container {
+            display: block !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            margin: 0 !important;
+            width: 800px;
+            background: #ffffff;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+    <div>This is the main app</div>
+    <div id="hidden-pdf-export-container">
+        <h1>Report</h1>
+        <p>This is the report content.</p>
+    </div>
+    <button onclick="exportPdf()">Export PDF</button>
+    <script>
+        function exportPdf() {
+            document.body.classList.add('exporting-pdf');
+            const container = document.getElementById('hidden-pdf-export-container');
+            const opt = {
+                margin: [20, 0],
+                filename: 'test.pdf',
+                html2canvas: { scale: 2, useCORS: true, logging: true, scrollY: 0 },
+                jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(container).save().then(() => {
+                document.body.classList.remove('exporting-pdf');
+            });
+        }
+    </script>
+</body>
+</html>
